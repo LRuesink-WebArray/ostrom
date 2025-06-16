@@ -1,0 +1,2265 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Ostrom API",
+    "version": "2023-11-01",
+    "description": "The Ostrom API is designed to allow our customer and partners to develop apps that integrates with our smart energy management platform. The API has a RESTful architecture and utilizes OAuth2 authorization.\n",
+    "license": {
+      "name": "Ostrom Commercial License",
+      "url": "https://ostrom.de"
+    }
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Describe how to authenticate in the api"
+    },
+    {
+      "name": "Users",
+      "description": "Describe how to fetch information related with users"
+    },
+    {
+      "name": "Orders",
+      "description": "Describe how to fetch information related with orders"
+    },
+    {
+      "name": "Contracts",
+      "description": "Describe how to fetch information related with contracts"
+    },
+    {
+      "name": "Prices",
+      "description": "Describe how to fetch information related with prices"
+    },
+    {
+      "name": "Products",
+      "description": "Describe how to fetch information related with products"
+    },
+    {
+      "name": "Webhooks",
+      "description": "Describe how to create webhooks and receive notifications from our system."
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://sandbox.ostrom-api.io",
+      "description": "Sandbox environment (test data)"
+    },
+    {
+      "url": "https://production.ostrom-api.io",
+      "description": "Production environment (live data)"
+    },
+    {
+      "url": "https://auth.sandbox.ostrom-api.io",
+      "description": "Authentication sandbox environment (generate access token - test data)"
+    },
+    {
+      "url": "https://auth.production.ostrom-api.io",
+      "description": "Authentication production environment (generate access token - live data)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ClientAccessToken": {
+        "type": "oauth2",
+        "description": "A `ClientAccessToken` is obtained via the [OAuth 2.0 Client Credentials grant](https://www.oauth.com/oauth2-servers/access-tokens/client-credentials/) and carries authorization to access all functionalities and data in your Ostrom account. Full details at [The ClientAccessToken](/api/reference#getting-an-access-token)\n",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://auth.sandbox.ostrom-api.io/oauth2/token",
+            "scopes": {}
+          }
+        }
+      },
+      "OAuth2BasicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "schemas": {
+      "OAuth2TokenResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "The access token to use for authentication"
+          },
+          "expires_in": {
+            "type": "integer",
+            "description": "The number of seconds until the token expires"
+          },
+          "token_type": {
+            "type": "string",
+            "description": "The type of the token"
+          }
+        },
+        "example": {
+          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6I...",
+          "expires_in": 3600,
+          "token_type": "Bearer"
+        }
+      },
+      "OAuth2TokenError400": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "The type of the error"
+          },
+          "error_description": {
+            "type": "string",
+            "description": "A human-readable message providing more details about the error"
+          }
+        },
+        "example": {
+          "error": "invalid_request",
+          "error_description": "The request is missing a required parameter, includes an invalid parameter value, or is otherwise malformed."
+        }
+      },
+      "OAuth2TokenError401": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "The type of the error"
+          },
+          "error_description": {
+            "type": "string",
+            "description": "A human-readable message providing more details about the error"
+          }
+        },
+        "example": {
+          "error": "invalid_client",
+          "error_description": "Client authentication failed (e.g., unknown client or unsupported authentication method)."
+        }
+      },
+      "BadRequestError400": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of the error"
+          },
+          "detail": {
+            "type": "string",
+            "description": "A human-readable message providing more details about the error"
+          }
+        },
+        "example": {
+          "type": "bad_request",
+          "detail": "invalid fields array..."
+        }
+      },
+      "UnauthorizedError401": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of the error"
+          },
+          "detail": {
+            "type": "string",
+            "description": "A human-readable message providing more details about the error"
+          }
+        },
+        "example": {
+          "type": "unauthorized",
+          "detail": "Unauthorized API access."
+        }
+      },
+      "BadRequestError404": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of the error"
+          },
+          "detail": {
+            "type": "string",
+            "description": "A human-readable message providing more details about the error"
+          }
+        },
+        "example": {
+          "type": "not_found",
+          "detail": "information about not found object..."
+        }
+      },
+      "TooManyRequestError429": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of the error"
+          },
+          "detail": {
+            "type": "string",
+            "description": "A human-readable message providing more details about the error"
+          }
+        },
+        "example": {
+          "type": "too_many_requests",
+          "detail": "API request limit per minute has been reached. Please try again later."
+        }
+      },
+      "GetMeResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email address of the user"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "The first name of the user"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "The last name of the user"
+          },
+          "language": {
+            "type": "string",
+            "description": "The language of the user",
+            "enum": [
+              "ENGLISH",
+              "GERMAN"
+            ]
+          }
+        },
+        "example": {
+          "email": "dummy-email@ostrom-api.io",
+          "firstName": "Max",
+          "lastName": "Mustermann",
+          "language": "GERMAN"
+        }
+      },
+      "UserLinkResponse": {
+        "type": "object",
+        "properties": {
+          "linkUrl": {
+            "type": "string",
+            "description": "The url used inside the partner app to open the Ostrom linking page"
+          }
+        },
+        "example": {
+          "linkUrl": "https://join.ostrom.de/link?id=hZTY3Zjc3QDI2YzI1MDExLTdhYTctNGE2NS1iNjBmLTZmMzc5NmRhODUyMDowNDViYjFiYmE0M2Y5NDU5YTc5OTgxZmEyYTg1Nm"
+        }
+      },
+      "GetOrdersResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "Order data",
+            "items": {
+              "$ref": "#/components/schemas/GetOrdersItemResponse"
+            }
+          }
+        }
+      },
+      "GetOrdersItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "The id of the order"
+          },
+          "type": {
+            "type": "string",
+            "description": "type of the order"
+          },
+          "productCode": {
+            "type": "string",
+            "description": "Product code of the order"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the order"
+          },
+          "customerFirstName": {
+            "type": "string",
+            "description": "Customer first name"
+          },
+          "customerLastName": {
+            "type": "string",
+            "description": "Customer last name"
+          },
+          "address": {
+            "$ref": "#/components/schemas/GetOrdersAddressResponse"
+          }
+        },
+        "example": {
+          "id": "100523456",
+          "type": "ELECTRICITY",
+          "productCode": "SIMPLY_DYNAMIC",
+          "status": "VERIFIED",
+          "customerFirstName": "Max",
+          "customerLastName": "Mustermann",
+          "address": {
+            "zip": "22083",
+            "city": "Hamburg",
+            "street": "Mozartstr.",
+            "houseNumber": "35"
+          }
+        }
+      },
+      "GetOrdersAddressResponse": {
+        "type": "object",
+        "description": "The address of the order",
+        "properties": {
+          "zip": {
+            "type": "string",
+            "description": "The zip code of the address"
+          },
+          "city": {
+            "type": "string",
+            "description": "The city of the address"
+          },
+          "street": {
+            "type": "string",
+            "description": "The street of the address"
+          },
+          "houseNumber": {
+            "type": "string",
+            "description": "The house number of the address"
+          }
+        }
+      },
+      "GetContractsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "Contact data",
+            "items": {
+              "$ref": "#/components/schemas/GetContractsItemResponse"
+            }
+          }
+        }
+      },
+      "GetContractsItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "The id of the contract"
+          },
+          "type": {
+            "type": "string",
+            "description": "type of the contract"
+          },
+          "productCode": {
+            "type": "string",
+            "description": "Product code of the contract"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the contract"
+          },
+          "customerFirstName": {
+            "type": "string",
+            "description": "Customer first name"
+          },
+          "customerLastName": {
+            "type": "string",
+            "description": "Customer last name"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date of the contract in ISO format"
+          },
+          "currentMonthlyDepositAmount": {
+            "type": "string",
+            "description": "Current monthly deposit amount in EUR of the contract"
+          },
+          "address": {
+            "$ref": "#/components/schemas/GetContractsAddressResponse"
+          }
+        },
+        "example": {
+          "id": "100523456",
+          "type": "ELECTRICITY",
+          "productCode": "SIMPLY_DYNAMIC",
+          "status": "ACTIVE",
+          "customerFirstName": "Max",
+          "customerLastName": "Mustermann",
+          "startDate": "2024-03-22",
+          "currentMonthlyDepositAmount": 120,
+          "address": {
+            "zip": "22083",
+            "city": "Hamburg",
+            "street": "Mozartstr.",
+            "houseNumber": "35"
+          }
+        }
+      },
+      "GetContractsAddressResponse": {
+        "type": "object",
+        "description": "The address of the contract",
+        "properties": {
+          "zip": {
+            "type": "string",
+            "description": "The zip code of the address"
+          },
+          "city": {
+            "type": "string",
+            "description": "The city of the address"
+          },
+          "street": {
+            "type": "string",
+            "description": "The street of the address"
+          },
+          "houseNumber": {
+            "type": "string",
+            "description": "The house number of the address"
+          }
+        }
+      },
+      "GetContractsEnergyConsumptionResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "The energy consumption data",
+            "items": {
+              "$ref": "#/components/schemas/GetContractsEnergyConsumptionItemResponse"
+            }
+          }
+        }
+      },
+      "GetContractsEnergyConsumptionItemResponse": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "The date of the energy consumption data (start from)",
+            "example": "2023-10-22T01:00:00.000Z"
+          },
+          "kWh": {
+            "type": "number",
+            "description": "The energy consumption in kWh",
+            "example": 0.48
+          }
+        }
+      },
+      "GetSpotPriceResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "The spot price data",
+            "items": {
+              "$ref": "#/components/schemas/GetSpotPriceItemResponse"
+            }
+          }
+        }
+      },
+      "GetSpotPriceItemResponse": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "The date of the day-ahead spot price data (start from)",
+            "example": "2023-10-22T01:00:00.000Z"
+          },
+          "netMwhPrice": {
+            "type": "number",
+            "description": "The MWh day-ahead spot price without VAT in EUR",
+            "example": 926
+          },
+          "netKwhPrice": {
+            "type": "number",
+            "description": "The kWh day-ahead spot price without VAT in cents",
+            "example": 92.6
+          },
+          "grossKwhPrice": {
+            "type": "number",
+            "description": "The kWh day-ahead spot price with VAT in cents",
+            "example": 110.2
+          },
+          "netKwhTaxAndLevies": {
+            "type": "number",
+            "description": "The kWh taxes and levies day-ahead spot price without VAT in cents",
+            "example": 16.2
+          },
+          "grossKwhTaxAndLevies": {
+            "type": "number",
+            "description": "The kWh taxes and levies day-ahead spot price with VAT in cents",
+            "example": 19.28
+          },
+          "netMonthlyOstromBaseFee": {
+            "type": "number",
+            "description": "The monthly Ostrom base fee without VAT in EUR",
+            "example": 5.04
+          },
+          "grossMonthlyOstromBaseFee": {
+            "type": "number",
+            "description": "The monthly Ostrom base fee with VAT in EUR",
+            "example": 6
+          },
+          "netMonthlyGridFees": {
+            "type": "number",
+            "description": "The monthly grid fees without VAT in EUR",
+            "example": 3.84
+          },
+          "grossMonthlyGridFees": {
+            "type": "number",
+            "description": "The monthly grid fees with VAT in EUR",
+            "example": 4.57
+          }
+        }
+      },
+      "CreateWebhookResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "The id of the webhook"
+          },
+          "clientApplicationId": {
+            "type": "string",
+            "description": "The id of the partner's client application that owns the webhook"
+          },
+          "url": {
+            "type": "string",
+            "description": "The url where the webhook events will be sent"
+          }
+        },
+        "example": {
+          "id": "12345",
+          "clientApplicationId": "ac11591e05vtf752a63vdi54b83k3f4",
+          "url": "https://partner-example.com/webhook"
+        }
+      },
+      "GetWebhookResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "The id of the webhook"
+          },
+          "clientApplicationId": {
+            "type": "string",
+            "description": "The id of the partner's client application that owns the webhook"
+          },
+          "url": {
+            "type": "string",
+            "description": "The url where the webhook events will be sent"
+          }
+        },
+        "example": {
+          "id": "12345",
+          "clientApplicationId": "ac11591e05vtf752a63vdi54b83k3f4",
+          "url": "https://partner-example.com/webhook"
+        }
+      },
+      "GetWebhooksResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "webhook data",
+            "items": {
+              "$ref": "#/components/schemas/GetWebhooksItemResponse"
+            }
+          }
+        }
+      },
+      "GetWebhooksItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "The id of the webhook"
+          },
+          "clientApplicationId": {
+            "type": "string",
+            "description": "The id of the partner's client application that owns the webhook"
+          },
+          "url": {
+            "type": "string",
+            "description": "The url where the webhook events will be sent"
+          }
+        },
+        "example": {
+          "id": "12345",
+          "clientApplicationId": "ac11591e05vtf752a63vdi54b83k3f4",
+          "url": "https://partner-example.com/webhook"
+        }
+      },
+      "DeleteWebhookResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "The id of the webhook"
+          },
+          "clientApplicationId": {
+            "type": "string",
+            "description": "The id of the partner's client application that owns the webhook"
+          },
+          "url": {
+            "type": "string",
+            "description": "The url where the webhook events will be sent"
+          }
+        },
+        "example": {
+          "id": "12345",
+          "clientApplicationId": "ac11591e05vtf752a63vdi54b83k3f4",
+          "url": "https://partner-example.com/webhook"
+        }
+      },
+      "TestWebhookResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "The id of the webhook"
+          },
+          "clientApplicationId": {
+            "type": "string",
+            "description": "The id of the partner's client application that owns the webhook"
+          },
+          "url": {
+            "type": "string",
+            "description": "The url where the webhook events will be sent"
+          }
+        },
+        "example": {
+          "id": "12345",
+          "clientApplicationId": "19b79v2f5bd594405342deoebc38df1",
+          "url": "https://partner-example.com/webhook"
+        }
+      },
+      "GetProductPriceResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "Product price data",
+            "items": {
+              "$ref": "#/components/schemas/GetProductPriceItemResponse"
+            }
+          }
+        }
+      },
+      "GetProductPriceItemResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The product code",
+            "example": "SIMPLY_DYNAMIC"
+          },
+          "netKwhPrice": {
+            "type": "number",
+            "description": "The kWh product price without VAT in cents",
+            "example": 92.6
+          },
+          "grossKwhPrice": {
+            "type": "number",
+            "description": "The kWh product price with VAT in cents",
+            "example": 110.2
+          },
+          "netKwhTaxAndLevies": {
+            "type": "number",
+            "description": "The kWh taxes and levies product price without VAT in cents",
+            "example": 16.2
+          },
+          "grossKwhTaxAndLevies": {
+            "type": "number",
+            "description": "The kWh taxes and levies product price with VAT in cents",
+            "example": 19.28
+          },
+          "netMonthlyOstromBaseFee": {
+            "type": "number",
+            "description": "The monthly Ostrom base fee without VAT in EUR",
+            "example": 5.04
+          },
+          "grossMonthlyOstromBaseFee": {
+            "type": "number",
+            "description": "The monthly Ostrom base fee with VAT in EUR",
+            "example": 6
+          },
+          "netMonthlyGridFees": {
+            "type": "number",
+            "description": "The monthly grid fees without VAT in EUR",
+            "example": 3.84
+          },
+          "grossMonthlyGridFees": {
+            "type": "number",
+            "description": "The monthly grid fees with VAT in EUR",
+            "example": 4.57
+          },
+          "netKwhUnitPrice": {
+            "type": "number",
+            "description": "The unit price without VAT in cents",
+            "example": 25.76
+          },
+          "grossKwhUnitPrice": {
+            "type": "number",
+            "description": "The unit price with VAT in cents",
+            "example": 30.66
+          },
+          "monthlyDeposit": {
+            "type": "number",
+            "description": "The monthly deposit amount in EUR",
+            "example": 60
+          },
+          "yearlyComsumption": {
+            "type": "number",
+            "description": "The yearly consumption in kWh",
+            "example": 2000
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/oauth2/token": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "createOAuth2Token",
+        "summary": "Obtain OAuth2 Access Token",
+        "description": "Allowed role: `USER` or `PARTNER`",
+        "servers": [
+          {
+            "url": "https://auth.sandbox.ostrom-api.io",
+            "description": "Authentication sandbox environment (generate access token - test data)"
+          },
+          {
+            "url": "https://auth.production.ostrom-api.io",
+            "description": "Authentication production environment (generate access token - live data)"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "grant_type"
+                ],
+                "properties": {
+                  "grant_type": {
+                    "type": "string",
+                    "description": "The Oauth grant type (e.g. client_credentials)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful token acquisition",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2TokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2TokenError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2TokenError401"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2BasicAuth": []
+          }
+        ]
+      }
+    },
+    "/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "getMe",
+        "summary": "Retrieve user information",
+        "description": "Allowed role: `USER`",
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful user data fetch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/link": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "linkUser",
+        "summary": "Link user to a partner client application",
+        "description": "Allowed role: `PARTNER`",
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "externalUserId",
+                  "language",
+                  "redirectUrl",
+                  "scopes"
+                ],
+                "properties": {
+                  "externalUserId": {
+                    "type": "string",
+                    "description": "Partner user unique identifier"
+                  },
+                  "referralCode": {
+                    "type": "string",
+                    "description": "Partner referral code to provide a discount to the user in case of signup, if not provided the signup is disabled during the account linking."
+                  },
+                  "language": {
+                    "type": "string",
+                    "enum": [
+                      "en-US",
+                      "de-DE"
+                    ],
+                    "description": "Language of the Ostrom connect page."
+                  },
+                  "redirectUrl": {
+                    "type": "string",
+                    "description": "Partner mobile app page link where the user is redirected after connect the contract."
+                  },
+                  "scopes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "order:read:data",
+                        "contract:read:data"
+                      ]
+                    },
+                    "description": "The scopes you wish to request access to when linking the user contract."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful user link",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{externalUserId}/disconnect": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "disconnectUser",
+        "summary": "Disconnect user from partner client application",
+        "description": "Allowed role: `PARTNER`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "externalUserId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Partner user unique identifier"
+          }
+        ],
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful user disconnection"
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{externalUserId}/orders": {
+      "get": {
+        "operationId": "getOrdersByExternalUserId",
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Retrieve user orders information by external user id",
+        "description": "Allowed role: `PARTNER`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "externalUserId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Partner user unique identifier"
+          }
+        ],
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful user order data fetch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOrdersResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{externalUserId}/orders/{orderId}": {
+      "get": {
+        "operationId": "getOrderByExternalUserId",
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Retrieve user order information by external user id",
+        "description": "Allowed role: `PARTNER`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "externalUserId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Partner user unique identifier"
+          },
+          {
+            "in": "path",
+            "name": "orderId",
+            "schema": {
+              "type": "number"
+            },
+            "required": true,
+            "description": "ID of the order"
+          }
+        ],
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful user order data fetch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOrdersItemResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contracts": {
+      "get": {
+        "operationId": "getContracts",
+        "tags": [
+          "Contracts"
+        ],
+        "summary": "Retrieve user contracts information",
+        "description": "Allowed role: `USER`",
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful user contract data fetch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetContractsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contracts/{contractId}/energy-consumption": {
+      "get": {
+        "operationId": "getContractEnergyConsumption",
+        "tags": [
+          "Contracts"
+        ],
+        "summary": "Retrieve user contract smart meter consumption",
+        "description": "Allowed role: `USER`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contractId",
+            "schema": {
+              "type": "number"
+            },
+            "required": true,
+            "description": "ID of the contract"
+          },
+          {
+            "in": "query",
+            "name": "startDate",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "description": "start date ISO format on UTC timezone. e.g. 2023-11-01T00:00:00.000Z"
+          },
+          {
+            "in": "query",
+            "name": "endDate",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "description": "end date ISO format on UTC timezone. e.g. 2023-11-02T00:00:00.000Z"
+          },
+          {
+            "in": "query",
+            "name": "resolution",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "HOUR",
+                "DAY",
+                "MONTH"
+              ]
+            },
+            "required": true,
+            "description": "The unit of time the data will be aggregated"
+          }
+        ],
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful user contract energy consumption data fetch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetContractsEnergyConsumptionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{externalUserId}/contracts": {
+      "get": {
+        "operationId": "getContractsByExternalUserId",
+        "tags": [
+          "Contracts"
+        ],
+        "summary": "Retrieve user contracts information by external user id",
+        "description": "Allowed role: `PARTNER`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "externalUserId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Partner user unique identifier"
+          }
+        ],
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful user contract data fetch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetContractsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{externalUserId}/contracts/{contractId}": {
+      "get": {
+        "operationId": "getContractByExternalUserId",
+        "tags": [
+          "Contracts"
+        ],
+        "summary": "Retrieve user contract information by external user id",
+        "description": "Allowed role: `PARTNER`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "externalUserId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Partner user unique identifier"
+          },
+          {
+            "in": "path",
+            "name": "contractId",
+            "schema": {
+              "type": "number"
+            },
+            "required": true,
+            "description": "ID of the contract"
+          }
+        ],
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful user contract data fetch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetContractsItemResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{externalUserId}/contracts/{contractId}/energy-consumption": {
+      "get": {
+        "operationId": "getContractEnergyConsumptionByExternalUserId",
+        "tags": [
+          "Contracts"
+        ],
+        "summary": "Retrieve user contract smart meter consumption by external user id",
+        "description": "Allowed role: `PARTNER`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "externalUserId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Partner user unique identifier"
+          },
+          {
+            "in": "path",
+            "name": "contractId",
+            "schema": {
+              "type": "number"
+            },
+            "required": true,
+            "description": "ID of the contract"
+          },
+          {
+            "in": "query",
+            "name": "startDate",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "description": "start date ISO format on UTC timezone. e.g. 2023-11-01T00:00:00.000Z"
+          },
+          {
+            "in": "query",
+            "name": "endDate",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "description": "end date ISO format on UTC timezone. e.g. 2023-11-02T00:00:00.000Z"
+          },
+          {
+            "in": "query",
+            "name": "resolution",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "HOUR",
+                "DAY",
+                "MONTH"
+              ]
+            },
+            "required": true,
+            "description": "The unit of time the data will be aggregated"
+          }
+        ],
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful user contract energy consumption data fetch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetContractsEnergyConsumptionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/spot-prices": {
+      "get": {
+        "operationId": "getSpotPrices",
+        "tags": [
+          "Prices"
+        ],
+        "summary": "Retrieve day-ahead spot price information",
+        "description": "Allowed role: `USER` or `PARTNER`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "startDate",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "description": "start date ISO format on UTC timezone. e.g. 2023-11-01T00:00:00.000Z"
+          },
+          {
+            "in": "query",
+            "name": "endDate",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "description": "end date ISO format on UTC timezone. e.g. 2023-11-02T00:00:00.000Z"
+          },
+          {
+            "in": "query",
+            "name": "resolution",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "HOUR"
+              ]
+            },
+            "required": true,
+            "description": "The unit of time the data will be aggregated"
+          },
+          {
+            "in": "query",
+            "name": "zip",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Zip code used to fetch Ostrom base price, gridFees, tax and levies. If not provided the respective values are returned as zero."
+          }
+        ],
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful spot price data fetch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSpotPriceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "operationId": "getProductPrices",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Retrieve product prices",
+        "description": "Allowed role: `PARTNER`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "zip",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The postal code where the tariff will be calculated"
+          },
+          {
+            "in": "query",
+            "name": "numberOfResidents",
+            "schema": {
+              "type": "number"
+            },
+            "description": "The number of people in the household, if not provided the default value will be 1"
+          },
+          {
+            "in": "query",
+            "name": "yearlyConsumption",
+            "schema": {
+              "type": "number"
+            },
+            "description": "The amount of yearly consumption of the household, if not provided the default value will be 1400 kWh"
+          }
+        ],
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful product prices data fetch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetProductPriceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhooks": {
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "createWebhook",
+        "summary": "Create a new webhook",
+        "description": "Allowed role: `PARTNER`",
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "url",
+                  "secret"
+                ],
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "description": "The URL of the webhook"
+                  },
+                  "secret": {
+                    "type": "string",
+                    "description": "The secret of the webhook"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful webhook creation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWebhookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "getWebhooks",
+        "summary": "Retrieve all webhooks",
+        "description": "Allowed role: `PARTNER`",
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful webhook data fetch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWebhooksResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhooks/{id}": {
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "getWebhook",
+        "summary": "Retrieve a webhook",
+        "description": "Allowed role: `PARTNER`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "required": true,
+            "description": "ID of the webhook"
+          }
+        ],
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful webhook data fetch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWebhookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "deleteWebhook",
+        "summary": "Delete a webhook",
+        "description": "Allowed role: `PARTNER`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "required": true,
+            "description": "ID of the webhook"
+          }
+        ],
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful webhook deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteWebhookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhooks/{id}/test": {
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "testWebhook",
+        "summary": "Test a webhook",
+        "description": "Allowed role: `PARTNER`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "required": true,
+            "description": "ID of the webhook"
+          }
+        ],
+        "security": [
+          {
+            "ClientAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful webhook test",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestWebhookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity with the provided id was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError404"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestError429"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

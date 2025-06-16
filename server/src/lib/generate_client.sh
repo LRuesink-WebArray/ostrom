@@ -1,0 +1,1 @@
+npx openapi-typescript ./openapi/openapi.json -o ./client/schema.d.ts
