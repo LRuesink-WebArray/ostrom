@@ -3,7 +3,14 @@
     "en": "Home"
   },
   "class": "other",
-  "capabilities": [],
+  "capabilities": [
+    "meter_power",
+    "meter_power.imported"
+  ],
+  "energy": {
+    "cumulative": true,
+    "cumulativeImportedCapability": "meter_power.imported"
+  },
   "platforms": [
     "local",
     "cloud"
@@ -13,5 +20,23 @@
     "small": "{{driverAssetsPath}}/images/small.png",
     "large": "{{driverAssetsPath}}/images/large.png",
     "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
-  }
+  },
+  "pair": [
+    {
+      "id": "loading",
+      "template": "loading"
+    },
+    {
+      "id": "account_link"
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": { "next": "add_devices" }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
 }

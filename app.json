@@ -2,7 +2,7 @@
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.ostrom",
   "version": "1.0.0",
-  "compatibility": ">=5.0.0",
+  "compatibility": ">=12.0.1",
   "sdk": 3,
   "platforms": [
     "local",
@@ -27,13 +27,21 @@
     "name": "WebArray .",
     "email": "l.ruesink@webarray.nl"
   },
+  "esm": true,
   "drivers": [
     {
       "name": {
         "en": "Home"
       },
       "class": "other",
-      "capabilities": [],
+      "capabilities": [
+        "meter_power",
+        "meter_power.imported"
+      ],
+      "energy": {
+        "cumulative": true,
+        "cumulativeImportedCapability": "meter_power.imported"
+      },
       "platforms": [
         "local",
         "cloud"
@@ -44,6 +52,26 @@
         "large": "/drivers/home/assets/images/large.png",
         "xlarge": "/drivers/home/assets/images/xlarge.png"
       },
+      "pair": [
+        {
+          "id": "loading",
+          "template": "loading"
+        },
+        {
+          "id": "account_link"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
       "id": "home"
     }
   ]

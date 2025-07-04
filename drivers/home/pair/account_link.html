@@ -1,0 +1,34 @@
+<style>
+    #button {
+        margin-top: 16px;
+    }
+</style>
+
+<header class="homey-header">
+    <h1 class="homey-title">
+        Linked?        
+    </h1>
+</header>
+
+<p>
+    If you linked the account successfully, please continue.
+</p>
+
+
+<button id="continueButton" class="homey-button-primary-full" disabled>
+    Continue
+</button>
+
+<script type="text/javascript">
+    const ACCOUNT_LINK_INIT_EVENT = 'account_link_init';
+    const continueButton = document.getElementById('continueButton');
+
+    Homey.on('account_link_init', function (link) {
+        Homey.popup(link);
+        continueButton.disabled = false;
+    });    
+
+    continueButton.addEventListener('click', () => {
+        Homey.nextView();
+    });
+</script>
