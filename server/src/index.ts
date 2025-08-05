@@ -1,11 +1,11 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { OstromClient } from './lib/client/client';
-import RateLimiter from './lib/client/ratelimiter';
-import { OstromAuthenticator } from './lib/client/authenticator';
+import { OstromClient } from './lib/client/client.js';
+import RateLimiter from './lib/client/ratelimiter.js';
+import { OstromAuthenticator } from './lib/client/authenticator.js';
 import { body, matchedData, param, query, validationResult } from 'express-validator';
-import logger from "./logger";
-import PriceCache from './PriceCache';
+import logger from "./logger.js";
 import { DateTime } from 'luxon';
+import { readFileSync } from 'fs';
 
 logger.level = 'debug';
 logger.info('Starting server...');
@@ -26,9 +26,6 @@ const client = new OstromClient(
   authenticator,
   rateLimiter
 );
-
-const priceCache = new PriceCache(client);
-
 
 const pricesValidator = [
   query('startDate')
@@ -62,7 +59,7 @@ app.get('/prices', pricesValidator, async (req: Request, res: Response) => {
       DateTime.fromISO(data.endDate),
       data.zip
     );
-    
+
     res.json(prices);
   }
 });
@@ -171,11 +168,22 @@ app.post('/users/:externalUserId/contracts/:contractId/energy-consumption', ener
   }
 });
 
-app.use(express.static(import.meta.dirname + '/public'));
+app.get('/ping', async (req: Request, res: Response) => {
+  res.send("pong");
+})
+
+app.get('/redirect.html', async (req: Request, res: Response) => {
+  const source = readFileSync('public/redirect.html', { encoding: 'utf8' });
+
+  res.set('Content-Type', 'text/html');
+  res.send(Buffer.from(source));
+});
+
+// app.use(express.static(import.meta.dirname + '/public'));
 
 // Note: error handler has to be defined last.
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  logger.error(err);  
+  logger.error(err);
   res.status(err.status || 500).json({
     error: {
       message: err.message.trim() || 'Internal server error'
@@ -183,10 +191,12 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   })
 })
 
-app.listen(3000, () => {
-  logger.info(`Configuration:
+// Optional: For local development/testing
+const port = process.env.PORT || 3000;
+logger.info(`Configuration:
 \tAPI url:\t${process.env.API_URL}
 \tAUTH url:\t${process.env.AUTH_URL}`);
 
-  logger.info('Ostrom API server is running on port 3000');
+app.listen(port, () => {
+  logger.info(`Server running on port ${port}`);
 });

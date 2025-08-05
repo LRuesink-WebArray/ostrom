@@ -1,5 +1,5 @@
 import Bottleneck from "bottleneck";
-import logger from "../../logger";
+import logger from "../../logger.js";
 
 export default class RateLimiter {
     private static readonly MAX_REQUESTS_PER_MINUTE = 50;

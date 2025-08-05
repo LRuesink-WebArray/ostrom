@@ -116,7 +116,8 @@ export default class OstromServerClient {
     private static readonly CALLBACK_PATH = '/redirect.html';
 
     // TODO: from environment
-    private readonly serverUrl = "http://10.58.1.196:3000";
+    //private readonly serverUrl = "http://10.58.1.198:3000";
+    private readonly serverUrl = "https://npqepay7vtnj5s2ab5pccylbb40junjg.lambda-url.eu-west-1.on.aws";
 
     constructor(private homey: Homey) { }
 
@@ -180,8 +181,6 @@ export default class OstromServerClient {
         } catch (error) {
             this.logAndThrow(error);
         }
-
-        this.homey.log('Retrieved price information', prices);
 
         return prices;
     }

@@ -28,6 +28,685 @@
     "email": "l.ruesink@webarray.nl"
   },
   "esm": true,
+  "flow": {
+    "triggers": [
+      {
+        "id": "price_below_avg",
+        "title": {
+          "en": "Current price is [x] percent below average of the next [y] hours"
+        },
+        "titleFormatted": {
+          "en": "Current price is [[percentage]] percent below average of the next [[hours]] hours"
+        },
+        "tokens": [],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "percentage",
+            "type": "number",
+            "title": {
+              "en": "Percentage"
+            },
+            "placeholder": {
+              "en": "20"
+            }
+          },
+          {
+            "name": "hours",
+            "type": "number",
+            "title": {
+              "en": "Hours"
+            },
+            "placeholder": {
+              "en": "1"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "price_above_avg",
+        "title": {
+          "en": "Current price is [x] percent above average of the next [y] hours"
+        },
+        "titleFormatted": {
+          "en": "Current price is [[percentage]] percent above average of the next [[hours]] hours"
+        },
+        "tokens": [],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "percentage",
+            "type": "number",
+            "title": {
+              "en": "Percentage"
+            },
+            "placeholder": {
+              "en": "20"
+            }
+          },
+          {
+            "name": "hours",
+            "type": "number",
+            "title": {
+              "en": "Hours"
+            },
+            "placeholder": {
+              "en": "2"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "price_below_avg_today",
+        "title": {
+          "en": "Current price is [x] percent below today's average"
+        },
+        "titleFormatted": {
+          "en": "Current price is [[percentage]] percent below today's average"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "percentage",
+            "type": "number",
+            "title": {
+              "en": "Percentage"
+            },
+            "placeholder": {
+              "en": "20"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "price_above_avg_today",
+        "title": {
+          "en": "Current price is [x] percent above today's average"
+        },
+        "titleFormatted": {
+          "en": "Current price is [[percentage]] percent above today's average"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "percentage",
+            "type": "number",
+            "title": {
+              "en": "Percentage"
+            },
+            "placeholder": {
+              "en": "20"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "price_at_lowest",
+        "title": {
+          "en": "Current price is at its lowest among the next [x] hours"
+        },
+        "titleFormatted": {
+          "en": "Current price is at its lowest among the next [[hours]] hours"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "hours",
+            "type": "number",
+            "title": {
+              "en": "Hours"
+            },
+            "placeholder": {
+              "en": "1"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "price_at_highest",
+        "title": {
+          "en": "Current price is at its highest among the next [y] hours"
+        },
+        "titleFormatted": {
+          "en": "Current price is at its highest among the next [[hours]] hours"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "hours",
+            "type": "number",
+            "title": {
+              "en": "Hours"
+            },
+            "placeholder": {
+              "en": "1"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "price_at_lowest_today",
+        "title": {
+          "en": "Current price is at today's lowest"
+        },
+        "platforms": [
+          "local",
+          "cloud"
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          }
+        ]
+      },
+      {
+        "id": "price_at_highest_today",
+        "title": {
+          "en": "Current price is at today's highest"
+        },
+        "platforms": [
+          "local",
+          "cloud"
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          }
+        ]
+      },
+      {
+        "id": "price_among_lowest_today",
+        "title": {
+          "en": "Current price is one of today's lowest [x] prices"
+        },
+        "titleFormatted": {
+          "en": "Current price is one of today's lowest [[ranked_hours]] prices"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "ranked_hours",
+            "type": "number",
+            "title": {
+              "en": "Hours"
+            },
+            "placeholder": {
+              "en": "1"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "price_among_highest_today",
+        "title": {
+          "en": "Current price is one of today's highest [x] prices"
+        },
+        "titleFormatted": {
+          "en": "Current price is one of today's highest [[ranked_hours]] prices"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "ranked_hours",
+            "type": "number",
+            "title": {
+              "en": "Hours"
+            },
+            "placeholder": {
+              "en": "1"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "cond_price_among_lowest_during_time",
+        "title": {
+          "en": "Current price is one of the [x] lowest prices between [y] and [z]"
+        },
+        "titleFormatted": {
+          "en": "Current price is one of the [[ranked_hours]] lowest prices between [[start_time]] and [[end_time]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "ranked_hours",
+            "type": "number",
+            "title": {
+              "en": "Amount of lowest hours"
+            },
+            "placeholder": {
+              "en": "1"
+            },
+            "min": 1,
+            "max": 24,
+            "step": 1
+          },
+          {
+            "name": "start_time",
+            "type": "time",
+            "title": {
+              "en": "Start time"
+            },
+            "placeholder": {
+              "en": "08:00"
+            }
+          },
+          {
+            "name": "end_time",
+            "type": "time",
+            "title": {
+              "en": "End time"
+            },
+            "placeholder": {
+              "en": "14:00"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "current_price_below",
+        "title": {
+          "en": "Current price !{{below|above}}"
+        },
+        "titleFormatted": {
+          "en": "Current price is !{{below|above}} [[price]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "price",
+            "type": "number",
+            "title": {
+              "en": "Price"
+            },
+            "placeholder": {
+              "en": "0.2"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "cond_price_below_avg",
+        "title": {
+          "en": "Current price !{{is|isn't}} [x] percent below average of the next [y] hours"
+        },
+        "titleFormatted": {
+          "en": "Current price !{{is|isn't}} [[percentage]] percent below average of the next [[hours]] hours"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "percentage",
+            "type": "number",
+            "title": {
+              "en": "Percentage"
+            },
+            "placeholder": {
+              "en": "20"
+            }
+          },
+          {
+            "name": "hours",
+            "type": "number",
+            "title": {
+              "en": "Hours"
+            },
+            "placeholder": {
+              "en": "1"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "cond_price_above_avg",
+        "title": {
+          "en": "Current price !{{is|isn't}} [x] percent above average of the next [y] hours"
+        },
+        "titleFormatted": {
+          "en": "Current price !{{is|isn't}} [[percentage]] percent above average of the next [[hours]] hours"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "percentage",
+            "type": "number",
+            "title": {
+              "en": "Percentage"
+            },
+            "placeholder": {
+              "en": "20"
+            }
+          },
+          {
+            "name": "hours",
+            "type": "number",
+            "title": {
+              "en": "Hours"
+            },
+            "placeholder": {
+              "en": "1"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "cond_price_below_avg_today",
+        "title": {
+          "en": "Current price !{{is|isn't}} [x] percent below today's average"
+        },
+        "titleFormatted": {
+          "en": "Current price !{{is|isn't}} [[percentage]] percent below today's average"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "percentage",
+            "type": "number",
+            "title": {
+              "en": "Percentage"
+            },
+            "placeholder": {
+              "en": "20"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "cond_price_above_avg_today",
+        "title": {
+          "en": "Current price !{{is|isn't}} [x] percent above today's average"
+        },
+        "titleFormatted": {
+          "en": "Current price !{{is|isn't}} [[percentage]] percent above today's average"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "percentage",
+            "type": "number",
+            "title": {
+              "en": "Percentage"
+            },
+            "placeholder": {
+              "en": "20"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "cond_price_at_lowest",
+        "title": {
+          "en": "Current price !{{is|isn't}} at its lowest among the next [x] hours"
+        },
+        "titleFormatted": {
+          "en": "Current price !{{is|isn't}} at its lowest among the next [[hours]] hours"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "hours",
+            "type": "number",
+            "title": {
+              "en": "Hours"
+            },
+            "placeholder": {
+              "en": "20"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "cond_price_at_highest",
+        "title": {
+          "en": "Current price !{{is|isn't}} at its highest among the next [x] hours"
+        },
+        "titleFormatted": {
+          "en": "Current price !{{is|isn't}} at its highest among the next [[hours]] hours"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "hours",
+            "type": "number",
+            "title": {
+              "en": "Hours"
+            },
+            "placeholder": {
+              "en": "1"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "cond_price_at_lowest_today",
+        "title": {
+          "en": "Current price !{{is|isn't}} at today's lowest"
+        },
+        "platforms": [
+          "local",
+          "cloud"
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          }
+        ]
+      },
+      {
+        "id": "cond_price_at_highest_today",
+        "title": {
+          "en": "Current price !{{is|isn't}} at today's highest"
+        },
+        "platforms": [
+          "local",
+          "cloud"
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          }
+        ]
+      },
+      {
+        "id": "cond_price_among_lowest_today",
+        "title": {
+          "en": "Current price !{{is|isn't}} one of today's lowest [x] prices"
+        },
+        "titleFormatted": {
+          "en": "Current price !{{is|isn't}} one of today's lowest [[ranked_hours]] prices"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "ranked_hours",
+            "type": "number",
+            "title": {
+              "en": "Hours"
+            },
+            "placeholder": {
+              "en": "3"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      },
+      {
+        "id": "cond_price_among_highest_today",
+        "title": {
+          "en": "Current price !{{is|isn't}} one of today's highest [x] prices"
+        },
+        "titleFormatted": {
+          "en": "Current price !{{is|isn't}} one of today's highest [[ranked_hours]] prices"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=home"
+          },
+          {
+            "name": "ranked_hours",
+            "type": "number",
+            "title": {
+              "en": "Hours"
+            },
+            "placeholder": {
+              "en": "3"
+            }
+          }
+        ],
+        "platforms": [
+          "local",
+          "cloud"
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "name": {
@@ -36,7 +715,10 @@
       "class": "other",
       "capabilities": [
         "meter_power",
-        "meter_power.imported"
+        "meter_power.imported",
+        "measure_price_current",
+        "measure_price_highest",
+        "measure_price_lowest"
       ],
       "energy": {
         "cumulative": true,
@@ -74,5 +756,45 @@
       ],
       "id": "home"
     }
-  ]
+  ],
+  "capabilities": {
+    "measure_price_current": {
+      "type": "number",
+      "title": {
+        "en": "Current price"
+      },
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "€"
+      },
+      "icon": "/assets/euro.svg"
+    },
+    "measure_price_highest": {
+      "type": "number",
+      "title": {
+        "en": "Highest price today"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": null,
+      "units": {
+        "en": "€"
+      },
+      "icon": "/assets/euro.svg"
+    },
+    "measure_price_lowest": {
+      "type": "number",
+      "title": {
+        "en": "Lowest price today"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": null,
+      "units": {
+        "en": "€"
+      },
+      "icon": "/assets/euro.svg"
+    }
+  }
 }

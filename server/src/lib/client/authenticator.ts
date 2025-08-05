@@ -1,8 +1,8 @@
 import { Buffer } from 'buffer';
-import RateLimiter from './ratelimiter';
+import RateLimiter from './ratelimiter.js';
 import createClient from 'openapi-fetch';
-import type { paths } from './schema';
-import logger from '../../logger';
+import type { paths } from './schema.js';
+import logger from '../../logger.js';
 
 export type Token = {
     access_token: string;

@@ -6,7 +6,10 @@
     "lib": "lib"
   },
   "scripts": {
-    "server": "LOG_LEVEL=debug tsx watch --env-file .env.dev src/index.ts"
+    "server": "LOG_LEVEL=debug tsx watch --env-file .env.dev src/index.ts",
+    "build": "tsc",
+    "package": "npm run build && npm run zip",
+    "zip": "zip -r lambda-deployment.zip dist/ node_modules/ public/ package.json"
   },
   "type": "module",
   "author": "",
@@ -14,13 +17,14 @@
   "description": "",
   "devDependencies": {
     "@tsconfig/node16": "^16.1.4",
+    "@types/aws-lambda": "^8.10.152",
     "@types/express": "^5.0.3",
+    "@types/luxon": "^3.6.2",
     "@types/node": "^24.0.3",
+    "@types/winston": "^2.4.4",
     "openapi-typescript": "^7.8.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3",
-    "@types/luxon": "^3.6.2",
-    "@types/winston": "^2.4.4"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "bottleneck": "^2.19.5",

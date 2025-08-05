@@ -1,9 +1,9 @@
 import createClient from 'openapi-fetch';
-import type { paths, components } from './schema';
-import RateLimiter from './ratelimiter';
-import { OstromAuthenticator } from './authenticator';
+import type { paths, components } from './schema.js';
+import RateLimiter from './ratelimiter.js';
+import { OstromAuthenticator } from './authenticator.js';
 import { DateTime } from 'luxon';
-import logger from '../../logger';
+import logger from '../../logger.js';
 
 export type Scope = "order:read:data" | "contract:read:data";
 export const enum Resolution {
