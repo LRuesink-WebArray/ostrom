@@ -212,6 +212,7 @@ export default class OstromHomeDevice extends Homey.Device {
 
   private async initializeTotalUsage() {
     this.log('Fetching historical usage...');
+    
     const historicalUsage = await this.getUsageSinceStartOfContract();
 
     if (historicalUsage.length === 0) {

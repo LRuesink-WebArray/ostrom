@@ -116,8 +116,8 @@ export default class OstromServerClient {
     private static readonly CALLBACK_PATH = '/redirect.html';
 
     // TODO: from environment
-    //private readonly serverUrl = "http://10.58.1.198:3000";
-    private readonly serverUrl = "https://npqepay7vtnj5s2ab5pccylbb40junjg.lambda-url.eu-west-1.on.aws";
+    //private readonly serverUrl = "http://10.58.1.212:3000";
+    private readonly serverUrl = "https://ostrom.athom.com";
 
     constructor(private homey: Homey) { }
 

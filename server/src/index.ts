@@ -173,6 +173,7 @@ app.get('/ping', async (req: Request, res: Response) => {
 })
 
 app.get('/redirect.html', async (req: Request, res: Response) => {
+  // TODO: cache?
   const source = readFileSync('public/redirect.html', { encoding: 'utf8' });
 
   res.set('Content-Type', 'text/html');
