@@ -715,7 +715,6 @@
       },
       "class": "other",
       "capabilities": [
-        "meter_power",
         "meter_power.imported",
         "measure_price_current",
         "measure_price_highest",
