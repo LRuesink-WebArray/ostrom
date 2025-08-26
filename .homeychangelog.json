@@ -16,5 +16,8 @@
   },
   "1.0.5": {
     "en": "Fixes"
+  },
+  "1.0.6": {
+    "en": "Fix double energy on dashboard"
   }
 }
