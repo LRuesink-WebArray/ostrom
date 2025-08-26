@@ -1,7 +1,7 @@
 import Homey from 'homey';
 import OstromServerClient from '../../lib/OstromServerClient.js';
 
-export default class OstromHomeDriver extends Homey.Driver {
+module.exports = class OstromHomeDriver extends Homey.Driver {
   // Views
   private static readonly LOADING_VIEW = 'loading';
   private static readonly ACCOUNT_LINK_VIEW = 'account_link';
@@ -36,6 +36,8 @@ export default class OstromHomeDriver extends Homey.Driver {
 
     session.setHandler('showView', async (view) => {
       if (view === OstromHomeDriver.LOADING_VIEW) {
+        this.log('Creating account link');
+
         link = await this.client.createAccountLink();
         
         await session.nextView();

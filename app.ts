@@ -1,6 +1,6 @@
 import Homey from 'homey';
 
-export default class OstromApp extends Homey.App {  
+module.exports = class OstromApp extends Homey.App {
   /**
    * onInit is called when the app is initialized.
    */

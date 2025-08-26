@@ -6,7 +6,7 @@ import Prices from '../../lib/Prices.js';
 
 type TriggerState = { current: Price, prices: Prices };
 
-export default class OstromHomeDevice extends Homey.Device {
+module.exports = class OstromHomeDevice extends Homey.Device {
   private static readonly MIN_JITTER = 0;
   private static readonly MAX_JITTER = 30;
 
@@ -215,7 +215,7 @@ export default class OstromHomeDevice extends Homey.Device {
     
     const historicalUsage = await this.getUsageSinceStartOfContract();
 
-    if (historicalUsage.length === 0) {
+    if (!historicalUsage || historicalUsage.length === 0) {
       this.error('Could not find any historical usage entries!');
       return;
     }

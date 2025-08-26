@@ -1,5 +1,6 @@
 import { App } from 'homey';
 import { DateTime } from 'luxon';
+import fetch from 'cross-fetch';
 
 type Homey = InstanceType<typeof App>["homey"];
 
@@ -116,8 +117,8 @@ export default class OstromServerClient {
     private static readonly CALLBACK_PATH = '/redirect.html';
 
     // TODO: from environment
-    //private readonly serverUrl = "http://10.58.1.212:3000";
-    private readonly serverUrl = "https://ostrom.athom.com";
+    private readonly serverUrl = "http://10.58.1.216:3000";
+    //private readonly serverUrl = "https://ostrom.athom.com";
 
     constructor(private homey: Homey) { }
 
@@ -188,6 +189,53 @@ export default class OstromServerClient {
     async getEnergyConsumption(contractId: number, startDate: DateTime, endDate: DateTime, resolution: Resolution): Promise<Consumption[]> {
         const externalUserId = await this.homey.cloud.getHomeyId();
 
+        // Check if the period is more than 1 year
+        const diffInYears = endDate.diff(startDate, 'years').years;
+        
+        if (diffInYears <= 1) {
+            // Single request for periods of 1 year or less
+            return this.fetchEnergyConsumptionChunk(externalUserId, contractId, startDate, endDate, resolution);
+        }
+
+        this.homey.log('Breaking up energy consumption call into multiple requests because it spans multipe years');
+
+        // Break up the request into yearly chunks
+        const allConsumption: Consumption[] = [];
+        let currentStart = startDate;
+
+        while (currentStart < endDate) {
+            // Calculate the end date for this chunk (1 year from current start, but not beyond the actual end date)
+            const currentEnd = DateTime.min(currentStart.plus({ years: 1 }), endDate);
+            
+            try {
+                const chunkConsumption = await this.fetchEnergyConsumptionChunk(
+                    externalUserId, 
+                    contractId, 
+                    currentStart, 
+                    currentEnd, 
+                    resolution
+                );
+                
+                allConsumption.push(...chunkConsumption);
+            } catch (error) {
+                this.homey.error(`Error fetching energy consumption chunk from ${currentStart.toISO()} to ${currentEnd.toISO()}`, error);
+                throw error;
+            }
+
+            // Move to the next chunk
+            currentStart = currentEnd;
+        }
+
+        return allConsumption;
+    }
+
+    private async fetchEnergyConsumptionChunk(
+        externalUserId: string, 
+        contractId: number, 
+        startDate: DateTime, 
+        endDate: DateTime, 
+        resolution: Resolution
+    ): Promise<Consumption[]> {
         let consumption: Consumption[];
         try {
             const path = OstromServerClient.USER_CONTRACT_ENERGY_CONSUMPTION_ENDPOINT
