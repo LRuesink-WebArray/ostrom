@@ -224,7 +224,7 @@ module.exports = class OstromHomeDevice extends Homey.Device {
 
     // Set the total consumption based on historical data; because we sum up all usage this should in theory
     // always increase (and as such be cumulative).
-    const totalKwh = historicalUsage.reduce((acc, consumption) => acc += consumption.kWh!, 0);
+    const totalKwh = historicalUsage.reduce((acc, consumption) => acc + consumption.kWh!, 0);
     this.log(`Starting at ${totalKwh.toFixed(2)} kWh`)
     await this.setCapabilityValue(OstromHomeDevice.CAPABILITY_IMPORTED_POWER, totalKwh);    
 
@@ -255,7 +255,7 @@ module.exports = class OstromHomeDevice extends Homey.Device {
     const jitter = randomInt(OstromHomeDevice.MIN_JITTER, OstromHomeDevice.MAX_JITTER);
 
     const nextRefresh = this.lastFetchedHour.plus({ hour: 1 }).startOf('hour').plus({ seconds: jitter });
-    const seconds = parseInt(nextRefresh.diff(DateTime.now()).as('seconds').toFixed(0));
+    const seconds = parseInt(DateTime.now().diff(nextRefresh).as('seconds').toFixed(0));
 
     this.log(`Next refresh scheduled at ${nextRefresh}, in ${seconds} seconds (jitter: ${jitter})`);
 
@@ -343,7 +343,7 @@ module.exports = class OstromHomeDevice extends Homey.Device {
       return;
     }
 
-    const totalConsumption = currentValue + incrementalConsumption.reduce((acc, consumption) => acc += consumption.kWh!, 0);
+    const totalConsumption = currentValue + incrementalConsumption.reduce((acc, consumption) => acc + consumption.kWh!, 0);
     this.log('Calculated new total consumption:', totalConsumption);
     await this.setCapabilityValue(OstromHomeDevice.CAPABILITY_IMPORTED_POWER, totalConsumption);
     this.lastFetchedHour = DateTime.fromISO(incrementalConsumption[incrementalConsumption.length - 1].date!);
