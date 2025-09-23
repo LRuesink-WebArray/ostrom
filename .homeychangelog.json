@@ -22,5 +22,8 @@
   },
   "1.0.7": {
     "en": "Fix timeout issue"
+  },
+  "1.0.8": {
+    "en": "Translations, net price"
   }
 }
