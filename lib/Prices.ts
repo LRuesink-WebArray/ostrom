@@ -2,13 +2,13 @@ import { DateTime } from "luxon";
 import { Price } from "./OstromServerClient.js";
 
 export default class Prices {
-    private values: number[];
+    private readonly values: number[];
     private _lowest: number|null = null;
     private _highest: number|null = null;
     private _average: number|null = null;
 
     constructor(private prices: Price[]) {
-        this.values = this.prices.map(price => price.grossKwhTaxAndLevies!);
+        this.values = this.prices.map(price => price.netPrice!);
     }
 
     getPricesForNextNHours(time: DateTime, hours: number): Prices {
@@ -25,12 +25,12 @@ export default class Prices {
     }
 
     getNLowest(n: number): Prices {
-        const sorted = [...this.prices].sort((a, b) => a.grossKwhTaxAndLevies! - b.grossKwhTaxAndLevies!);
+        const sorted = [...this.prices].sort((a, b) => a.netPrice! - b.netPrice!);
         return new Prices(sorted.slice(0, n));
     }
 
     getNHighest(n: number) {
-        const sorted = [...this.prices].sort((a, b) => b.grossKwhTaxAndLevies! - a.grossKwhTaxAndLevies!);
+        const sorted = [...this.prices].sort((a, b) => b.netPrice! - a.netPrice!);
         return new Prices(sorted.slice(0, n));
     }
 

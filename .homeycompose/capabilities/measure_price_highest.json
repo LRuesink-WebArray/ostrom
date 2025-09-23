@@ -1,13 +1,15 @@
 {
   "type": "number",
   "title": {
-    "en": "Highest price today"
+    "en": "Highest price today",
+    "de": "Höchster Preis heute"
   },
   "getable": true,
   "setable": false,
   "uiComponent": null,
   "units": {
-    "en": "€"
+    "en": "€",
+    "de": "€"
   },
   "icon": "/assets/euro.svg"
 }

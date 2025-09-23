@@ -88,6 +88,9 @@ export interface Price {
      * @example 4.57
      */
     grossMonthlyGridFees?: number;
+
+    // The final price for the customer.
+    netPrice?: number;
 }
 
 export interface Consumption {
@@ -178,7 +181,7 @@ export default class OstromServerClient {
             };
 
             const response = await fetch(this.serverUrl + OstromServerClient.PRICES_PATH + '?' + new URLSearchParams(parameters));
-            prices = await response.json() as Price[];                
+            prices = await response.json() as Price[];
         } catch (error) {
             this.logAndThrow(error);
         }

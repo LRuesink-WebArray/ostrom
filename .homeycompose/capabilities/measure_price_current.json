@@ -1,12 +1,14 @@
 {
   "type": "number",
   "title": {
-    "en": "Current price"
+    "en": "Current price",
+    "de": "Aktueller Preis"
   },
   "getable": true,
   "setable": false,
   "units": {
-    "en": "€"
+    "en": "€",
+    "de": "€"
   },
   "icon": "/assets/euro.svg"
 }

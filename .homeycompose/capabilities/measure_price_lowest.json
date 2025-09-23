@@ -1,13 +1,15 @@
 {
   "type": "number",
   "title": {
-    "en": "Lowest price today"
+    "en": "Lowest price today",
+    "de": "Niedrigster Preis heute"
   },
   "getable": true,
   "setable": false,
   "uiComponent": null,
   "units": {
-    "en": "€"    
+    "en": "€",
+    "de": "€"
   },
   "icon": "/assets/euro.svg"
 }
