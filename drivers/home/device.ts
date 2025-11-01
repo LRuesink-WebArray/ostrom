@@ -260,9 +260,19 @@ module.exports = class OstromHomeDevice extends Homey.Device {
     this.log(`Next refresh scheduled at ${nextRefresh}, in ${seconds} seconds (jitter: ${jitter})`);
 
     this.scheduledUpdate = this.homey.setTimeout(async () => {
-      await this.updateTotalEnergyConsumption();
-      await this.updatePricingInformation();
+      try {
+        await this.updateTotalEnergyConsumption();
+      } catch (error) {
+        this.error('Failed to update energy consumption:', error);
+      }
 
+      try {
+        await this.updatePricingInformation();
+      } catch (error) {
+        this.error('Failed to update pricing information:', error);
+      }
+
+      // Always schedule the next update, even if the current one failed
       this.scheduleNextUpdate();
     }, seconds * 1000);
   }
@@ -342,6 +352,11 @@ module.exports = class OstromHomeDevice extends Homey.Device {
       Resolution.HOUR
     );
     this.log('Retrieved incremental consumption data', incrementalConsumption);
+
+    if (!Array.isArray(incrementalConsumption)) {
+      this.error('Retrieved consumption data is not an array:', typeof incrementalConsumption);
+      return;
+    }
 
     if (incrementalConsumption.length === 0) {
       this.log('Did not retrieve any incremental consumption data.');

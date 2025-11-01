@@ -8,6 +8,14 @@ export default class Prices {
     private _average: number|null = null;
 
     constructor(private prices: Price[]) {
+        if (!Array.isArray(prices)) {
+            throw new Error(`Prices constructor requires an array, but received: ${typeof prices}`);
+        }
+        
+        if (prices.length === 0) {
+            throw new Error('Prices constructor requires a non-empty array');
+        }
+        
         this.values = this.prices.map(price => price.netPrice!);
     }
 

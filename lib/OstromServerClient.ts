@@ -161,7 +161,18 @@ export default class OstromServerClient {
                 method: 'GET'
             });
 
-            contracts = await response.json() as Contract[];
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (!Array.isArray(data)) {
+                throw new Error(`Expected array response but got: ${typeof data}`);
+            }
+            
+            contracts = data as Contract[];
         } catch (error) {
             this.logAndThrow(error);
         }
@@ -181,7 +192,19 @@ export default class OstromServerClient {
             };
 
             const response = await fetch(this.serverUrl + OstromServerClient.PRICES_PATH + '?' + new URLSearchParams(parameters));
-            prices = await response.json() as Price[];
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (!Array.isArray(data)) {
+                throw new Error(`Expected array response but got: ${typeof data}`);
+            }
+            
+            prices = data as Price[];
         } catch (error) {
             this.logAndThrow(error);
         }
@@ -259,7 +282,18 @@ export default class OstromServerClient {
                 body: JSON.stringify(body)
             });
 
-            consumption = await response.json() as Consumption[];
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (!Array.isArray(data)) {
+                throw new Error(`Expected array response but got: ${typeof data}`);
+            }
+            
+            consumption = data as Consumption[];
         } catch (error) {
             this.logAndThrow(error);
         }
