@@ -34,5 +34,8 @@
   },
   "1.0.11": {
     "en": "Extra logging"
+  },
+  "1.0.12": {
+    "en": "Add missing translations"
   }
 }

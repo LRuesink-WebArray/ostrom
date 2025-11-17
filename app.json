@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.ostrom",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "compatibility": ">=12.0.1",
   "sdk": 3,
   "brandColor": "#00c1b1",
@@ -11,10 +11,12 @@
     "cloud"
   ],
   "name": {
-    "en": "Ostrom"
+    "en": "Ostrom",
+    "de": "Ostrom"
   },
   "description": {
-    "en": "Integrate Ostrom with your Homey."
+    "en": "Integrate Ostrom with your Homey.",
+    "de": "Integrieren Sie Ostrom mit Ihrem Homey."
   },
   "category": [
     "energy"
@@ -34,10 +36,12 @@
       {
         "id": "price_below_avg",
         "title": {
-          "en": "Current price is [x] percent below average of the next [y] hours"
+          "en": "Current price is [x] percent below average of the next [y] hours",
+          "de": "Aktueller Preis liegt [x] Prozent unter dem Durchschnitt der nächsten [y] Stunden"
         },
         "titleFormatted": {
-          "en": "Current price is [[percentage]] percent below average of the next [[hours]] hours"
+          "en": "Current price is [[percentage]] percent below average of the next [[hours]] hours",
+          "de": "Aktueller Preis liegt [[percentage]] Prozent unter dem Durchschnitt der nächsten [[hours]] Stunden"
         },
         "tokens": [],
         "args": [
@@ -50,7 +54,8 @@
             "name": "percentage",
             "type": "number",
             "title": {
-              "en": "Percentage"
+              "en": "Percentage",
+              "de": "Prozent"
             },
             "placeholder": {
               "en": "20"
@@ -60,7 +65,8 @@
             "name": "hours",
             "type": "number",
             "title": {
-              "en": "Hours"
+              "en": "Hours",
+              "de": "Stunden"
             },
             "placeholder": {
               "en": "1"
@@ -75,10 +81,12 @@
       {
         "id": "price_above_avg",
         "title": {
-          "en": "Current price is [x] percent above average of the next [y] hours"
+          "en": "Current price is [x] percent above average of the next [y] hours",
+          "de": "Aktueller Preis liegt [x] Prozent über dem Durchschnitt der nächsten [y] Stunden"
         },
         "titleFormatted": {
-          "en": "Current price is [[percentage]] percent above average of the next [[hours]] hours"
+          "en": "Current price is [[percentage]] percent above average of the next [[hours]] hours",
+          "de": "Aktueller Preis liegt [[percentage]] Prozent über dem Durchschnitt der nächsten [[hours]] Stunden"
         },
         "tokens": [],
         "args": [
@@ -91,7 +99,8 @@
             "name": "percentage",
             "type": "number",
             "title": {
-              "en": "Percentage"
+              "en": "Percentage",
+              "de": "Prozent"
             },
             "placeholder": {
               "en": "20"
@@ -101,7 +110,8 @@
             "name": "hours",
             "type": "number",
             "title": {
-              "en": "Hours"
+              "en": "Hours",
+              "de": "Stunden"
             },
             "placeholder": {
               "en": "2"
@@ -116,10 +126,12 @@
       {
         "id": "price_below_avg_today",
         "title": {
-          "en": "Current price is [x] percent below today's average"
+          "en": "Current price is [x] percent below today's average",
+          "de": "Aktueller Preis liegt [x] Prozent unter dem heutigen Durchschnitt"
         },
         "titleFormatted": {
-          "en": "Current price is [[percentage]] percent below today's average"
+          "en": "Current price is [[percentage]] percent below today's average",
+          "de": "Aktueller Preis liegt [[percentage]] Prozent unter dem heutigen Durchschnitt"
         },
         "args": [
           {
@@ -131,7 +143,8 @@
             "name": "percentage",
             "type": "number",
             "title": {
-              "en": "Percentage"
+              "en": "Percentage",
+              "de": "Prozent"
             },
             "placeholder": {
               "en": "20"
@@ -146,10 +159,12 @@
       {
         "id": "price_above_avg_today",
         "title": {
-          "en": "Current price is [x] percent above today's average"
+          "en": "Current price is [x] percent above today's average",
+          "de": "Aktueller Preis liegt [x] Prozent über dem heutigen Durchschnitt"
         },
         "titleFormatted": {
-          "en": "Current price is [[percentage]] percent above today's average"
+          "en": "Current price is [[percentage]] percent above today's average",
+          "de": "Aktueller Preis liegt [[percentage]] Prozent über dem heutigen Durchschnitt"
         },
         "args": [
           {
@@ -161,7 +176,8 @@
             "name": "percentage",
             "type": "number",
             "title": {
-              "en": "Percentage"
+              "en": "Percentage",
+              "de": "Prozent"
             },
             "placeholder": {
               "en": "20"
@@ -176,10 +192,12 @@
       {
         "id": "price_at_lowest",
         "title": {
-          "en": "Current price is at its lowest among the next [x] hours"
+          "en": "Current price is at its lowest among the next [x] hours",
+          "de": "Aktueller Preis ist am niedrigsten unter den nächsten [x] Stunden"
         },
         "titleFormatted": {
-          "en": "Current price is at its lowest among the next [[hours]] hours"
+          "en": "Current price is at its lowest among the next [[hours]] hours",
+          "de": "Aktueller Preis ist am niedrigsten unter den nächsten [[hours]] Stunden"
         },
         "args": [
           {
@@ -191,7 +209,8 @@
             "name": "hours",
             "type": "number",
             "title": {
-              "en": "Hours"
+              "en": "Hours",
+              "de": "Stunden"
             },
             "placeholder": {
               "en": "1"
@@ -206,10 +225,12 @@
       {
         "id": "price_at_highest",
         "title": {
-          "en": "Current price is at its highest among the next [y] hours"
+          "en": "Current price is at its highest among the next [y] hours",
+          "de": "Aktueller Preis ist am höchsten unter den nächsten [y] Stunden"
         },
         "titleFormatted": {
-          "en": "Current price is at its highest among the next [[hours]] hours"
+          "en": "Current price is at its highest among the next [[hours]] hours",
+          "de": "Aktueller Preis ist am höchsten unter den nächsten [[hours]] Stunden"
         },
         "args": [
           {
@@ -221,7 +242,8 @@
             "name": "hours",
             "type": "number",
             "title": {
-              "en": "Hours"
+              "en": "Hours",
+              "de": "Stunden"
             },
             "placeholder": {
               "en": "1"
@@ -236,7 +258,8 @@
       {
         "id": "price_at_lowest_today",
         "title": {
-          "en": "Current price is at today's lowest"
+          "en": "Current price is at today's lowest",
+          "de": "Aktueller Preis ist der niedrigste heute"
         },
         "platforms": [
           "local",
@@ -253,7 +276,8 @@
       {
         "id": "price_at_highest_today",
         "title": {
-          "en": "Current price is at today's highest"
+          "en": "Current price is at today's highest",
+          "de": "Aktueller Preis ist der höchste heute"
         },
         "platforms": [
           "local",
@@ -270,10 +294,12 @@
       {
         "id": "price_among_lowest_today",
         "title": {
-          "en": "Current price is one of today's lowest [x] prices"
+          "en": "Current price is one of today's lowest [x] prices",
+          "de": "Aktueller Preis gehört zu den [x] niedrigsten Preisen heute"
         },
         "titleFormatted": {
-          "en": "Current price is one of today's lowest [[ranked_hours]] prices"
+          "en": "Current price is one of today's lowest [[ranked_hours]] prices",
+          "de": "Aktueller Preis gehört zu den [[ranked_hours]] niedrigsten Preisen heute"
         },
         "args": [
           {
@@ -285,7 +311,8 @@
             "name": "ranked_hours",
             "type": "number",
             "title": {
-              "en": "Hours"
+              "en": "Hours",
+              "de": "Stunden"
             },
             "placeholder": {
               "en": "1"
@@ -300,10 +327,12 @@
       {
         "id": "price_among_highest_today",
         "title": {
-          "en": "Current price is one of today's highest [x] prices"
+          "en": "Current price is one of today's highest [x] prices",
+          "de": "Aktueller Preis gehört zu den [x] höchsten Preisen heute"
         },
         "titleFormatted": {
-          "en": "Current price is one of today's highest [[ranked_hours]] prices"
+          "en": "Current price is one of today's highest [[ranked_hours]] prices",
+          "de": "Aktueller Preis gehört zu den [[ranked_hours]] höchsten Preisen heute"
         },
         "args": [
           {
@@ -315,7 +344,8 @@
             "name": "ranked_hours",
             "type": "number",
             "title": {
-              "en": "Hours"
+              "en": "Hours",
+              "de": "Stunden"
             },
             "placeholder": {
               "en": "1"
@@ -332,10 +362,12 @@
       {
         "id": "cond_price_among_lowest_during_time",
         "title": {
-          "en": "Current price is one of the [x] lowest prices between [y] and [z]"
+          "en": "Current price is one of the [x] lowest prices between [y] and [z]",
+          "de": "Aktueller Preis gehört zu den [x] niedrigsten Preisen zwischen [y] und [z]"
         },
         "titleFormatted": {
-          "en": "Current price is one of the [[ranked_hours]] lowest prices between [[start_time]] and [[end_time]]"
+          "en": "Current price is one of the [[ranked_hours]] lowest prices between [[start_time]] and [[end_time]]",
+          "de": "Aktueller Preis gehört zu den [[ranked_hours]] niedrigsten Preisen zwischen [[start_time]] und [[end_time]]"
         },
         "args": [
           {
@@ -347,7 +379,8 @@
             "name": "ranked_hours",
             "type": "number",
             "title": {
-              "en": "Amount of lowest hours"
+              "en": "Amount of lowest hours",
+              "de": "Anzahl der niedrigsten Stunden"
             },
             "placeholder": {
               "en": "1"
@@ -360,7 +393,8 @@
             "name": "start_time",
             "type": "time",
             "title": {
-              "en": "Start time"
+              "en": "Start time",
+              "de": "Startzeit"
             },
             "placeholder": {
               "en": "08:00"
@@ -370,7 +404,8 @@
             "name": "end_time",
             "type": "time",
             "title": {
-              "en": "End time"
+              "en": "End time",
+              "de": "Endzeit"
             },
             "placeholder": {
               "en": "14:00"
@@ -385,10 +420,12 @@
       {
         "id": "current_price_below",
         "title": {
-          "en": "Current price !{{below|above}}"
+          "en": "Current price !{{below|above}}",
+          "de": "Aktueller Preis !{{unter|über}}"
         },
         "titleFormatted": {
-          "en": "Current price is !{{below|above}} [[price]]"
+          "en": "Current price is !{{below|above}} [[price]]",
+          "de": "Aktueller Preis ist !{{unter|über}} [[price]]"
         },
         "args": [
           {
@@ -400,7 +437,8 @@
             "name": "price",
             "type": "number",
             "title": {
-              "en": "Price"
+              "en": "Price",
+              "de": "Preis"
             },
             "placeholder": {
               "en": "0.2"
@@ -415,10 +453,12 @@
       {
         "id": "cond_price_below_avg",
         "title": {
-          "en": "Current price !{{is|isn't}} [x] percent below average of the next [y] hours"
+          "en": "Current price !{{is|isn't}} [x] percent below average of the next [y] hours",
+          "de": "Aktueller Preis !{{liegt|liegt nicht}} [x] Prozent unter dem Durchschnitt der nächsten [y] Stunden"
         },
         "titleFormatted": {
-          "en": "Current price !{{is|isn't}} [[percentage]] percent below average of the next [[hours]] hours"
+          "en": "Current price !{{is|isn't}} [[percentage]] percent below average of the next [[hours]] hours",
+          "de": "Aktueller Preis !{{liegt|liegt nicht}} [[percentage]] Prozent unter dem Durchschnitt der nächsten [[hours]] Stunden"
         },
         "args": [
           {
@@ -430,7 +470,8 @@
             "name": "percentage",
             "type": "number",
             "title": {
-              "en": "Percentage"
+              "en": "Percentage",
+              "de": "Prozent"
             },
             "placeholder": {
               "en": "20"
@@ -440,7 +481,8 @@
             "name": "hours",
             "type": "number",
             "title": {
-              "en": "Hours"
+              "en": "Hours",
+              "de": "Stunden"
             },
             "placeholder": {
               "en": "1"
@@ -455,10 +497,12 @@
       {
         "id": "cond_price_above_avg",
         "title": {
-          "en": "Current price !{{is|isn't}} [x] percent above average of the next [y] hours"
+          "en": "Current price !{{is|isn't}} [x] percent above average of the next [y] hours",
+          "de": "Aktueller Preis !{{liegt|liegt nicht}} [x] Prozent über dem Durchschnitt der nächsten [y] Stunden"
         },
         "titleFormatted": {
-          "en": "Current price !{{is|isn't}} [[percentage]] percent above average of the next [[hours]] hours"
+          "en": "Current price !{{is|isn't}} [[percentage]] percent above average of the next [[hours]] hours",
+          "de": "Aktueller Preis !{{liegt|liegt nicht}} [[percentage]] Prozent über dem Durchschnitt der nächsten [[hours]] Stunden"
         },
         "args": [
           {
@@ -470,7 +514,8 @@
             "name": "percentage",
             "type": "number",
             "title": {
-              "en": "Percentage"
+              "en": "Percentage",
+              "de": "Prozent"
             },
             "placeholder": {
               "en": "20"
@@ -480,7 +525,8 @@
             "name": "hours",
             "type": "number",
             "title": {
-              "en": "Hours"
+              "en": "Hours",
+              "de": "Stunden"
             },
             "placeholder": {
               "en": "1"
@@ -495,10 +541,12 @@
       {
         "id": "cond_price_below_avg_today",
         "title": {
-          "en": "Current price !{{is|isn't}} [x] percent below today's average"
+          "en": "Current price !{{is|isn't}} [x] percent below today's average",
+          "de": "Aktueller Preis !{{liegt|liegt nicht}} [x] Prozent unter dem heutigen Durchschnitt"
         },
         "titleFormatted": {
-          "en": "Current price !{{is|isn't}} [[percentage]] percent below today's average"
+          "en": "Current price !{{is|isn't}} [[percentage]] percent below today's average",
+          "de": "Aktueller Preis !{{liegt|liegt nicht}} [[percentage]] Prozent unter dem heutigen Durchschnitt"
         },
         "args": [
           {
@@ -510,7 +558,8 @@
             "name": "percentage",
             "type": "number",
             "title": {
-              "en": "Percentage"
+              "en": "Percentage",
+              "de": "Prozent"
             },
             "placeholder": {
               "en": "20"
@@ -525,10 +574,12 @@
       {
         "id": "cond_price_above_avg_today",
         "title": {
-          "en": "Current price !{{is|isn't}} [x] percent above today's average"
+          "en": "Current price !{{is|isn't}} [x] percent above today's average",
+          "de": "Aktueller Preis !{{liegt|liegt nicht}} [x] Prozent über dem heutigen Durchschnitt"
         },
         "titleFormatted": {
-          "en": "Current price !{{is|isn't}} [[percentage]] percent above today's average"
+          "en": "Current price !{{is|isn't}} [[percentage]] percent above today's average",
+          "de": "Aktueller Preis !{{liegt|liegt nicht}} [[percentage]] Prozent über dem heutigen Durchschnitt"
         },
         "args": [
           {
@@ -540,7 +591,8 @@
             "name": "percentage",
             "type": "number",
             "title": {
-              "en": "Percentage"
+              "en": "Percentage",
+              "de": "Prozent"
             },
             "placeholder": {
               "en": "20"
@@ -555,10 +607,12 @@
       {
         "id": "cond_price_at_lowest",
         "title": {
-          "en": "Current price !{{is|isn't}} at its lowest among the next [x] hours"
+          "en": "Current price !{{is|isn't}} at its lowest among the next [x] hours",
+          "de": "Aktueller Preis !{{ist|ist nicht}} am niedrigsten unter den nächsten [x] Stunden"
         },
         "titleFormatted": {
-          "en": "Current price !{{is|isn't}} at its lowest among the next [[hours]] hours"
+          "en": "Current price !{{is|isn't}} at its lowest among the next [[hours]] hours",
+          "de": "Aktueller Preis !{{ist|ist nicht}} am niedrigsten unter den nächsten [[hours]] Stunden"
         },
         "args": [
           {
@@ -570,7 +624,8 @@
             "name": "hours",
             "type": "number",
             "title": {
-              "en": "Hours"
+              "en": "Hours",
+              "de": "Stunden"
             },
             "placeholder": {
               "en": "20"
@@ -585,10 +640,12 @@
       {
         "id": "cond_price_at_highest",
         "title": {
-          "en": "Current price !{{is|isn't}} at its highest among the next [x] hours"
+          "en": "Current price !{{is|isn't}} at its highest among the next [x] hours",
+          "de": "Aktueller Preis !{{ist|ist nicht}} am höchsten unter den nächsten [x] Stunden"
         },
         "titleFormatted": {
-          "en": "Current price !{{is|isn't}} at its highest among the next [[hours]] hours"
+          "en": "Current price !{{is|isn't}} at its highest among the next [[hours]] hours",
+          "de": "Aktueller Preis !{{ist|ist nicht}} am höchsten unter den nächsten [[hours]] Stunden"
         },
         "args": [
           {
@@ -600,7 +657,8 @@
             "name": "hours",
             "type": "number",
             "title": {
-              "en": "Hours"
+              "en": "Hours",
+              "de": "Stunden"
             },
             "placeholder": {
               "en": "1"
@@ -615,7 +673,8 @@
       {
         "id": "cond_price_at_lowest_today",
         "title": {
-          "en": "Current price !{{is|isn't}} at today's lowest"
+          "en": "Current price !{{is|isn't}} at today's lowest",
+          "de": "Aktueller Preis !{{ist|ist nicht}} der niedrigste heute"
         },
         "platforms": [
           "local",
@@ -632,7 +691,8 @@
       {
         "id": "cond_price_at_highest_today",
         "title": {
-          "en": "Current price !{{is|isn't}} at today's highest"
+          "en": "Current price !{{is|isn't}} at today's highest",
+          "de": "Aktueller Preis !{{ist|ist nicht}} der höchste heute"
         },
         "platforms": [
           "local",
@@ -649,10 +709,12 @@
       {
         "id": "cond_price_among_lowest_today",
         "title": {
-          "en": "Current price !{{is|isn't}} one of today's lowest [x] prices"
+          "en": "Current price !{{is|isn't}} one of today's lowest [x] prices",
+          "de": "Aktueller Preis !{{gehört|gehört nicht}} zu den [x] niedrigsten Preisen heute"
         },
         "titleFormatted": {
-          "en": "Current price !{{is|isn't}} one of today's lowest [[ranked_hours]] prices"
+          "en": "Current price !{{is|isn't}} one of today's lowest [[ranked_hours]] prices",
+          "de": "Aktueller Preis !{{gehört|gehört nicht}} zu den [[ranked_hours]] niedrigsten Preisen heute"
         },
         "args": [
           {
@@ -664,7 +726,8 @@
             "name": "ranked_hours",
             "type": "number",
             "title": {
-              "en": "Hours"
+              "en": "Hours",
+              "de": "Stunden"
             },
             "placeholder": {
               "en": "3"
@@ -679,10 +742,12 @@
       {
         "id": "cond_price_among_highest_today",
         "title": {
-          "en": "Current price !{{is|isn't}} one of today's highest [x] prices"
+          "en": "Current price !{{is|isn't}} one of today's highest [x] prices",
+          "de": "Aktueller Preis !{{gehört|gehört nicht}} zu den [x] höchsten Preisen heute"
         },
         "titleFormatted": {
-          "en": "Current price !{{is|isn't}} one of today's highest [[ranked_hours]] prices"
+          "en": "Current price !{{is|isn't}} one of today's highest [[ranked_hours]] prices",
+          "de": "Aktueller Preis !{{gehört|gehört nicht}} zu den [[ranked_hours]] höchsten Preisen heute"
         },
         "args": [
           {
@@ -694,7 +759,8 @@
             "name": "ranked_hours",
             "type": "number",
             "title": {
-              "en": "Hours"
+              "en": "Hours",
+              "de": "Stunden"
             },
             "placeholder": {
               "en": "3"
@@ -711,7 +777,8 @@
   "drivers": [
     {
       "name": {
-        "en": "Home"
+        "en": "Home",
+        "de": "Zuhause"
       },
       "class": "other",
       "capabilities": [

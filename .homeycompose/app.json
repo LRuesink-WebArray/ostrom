@@ -1,6 +1,6 @@
 {
   "id": "com.ostrom",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "compatibility": ">=12.0.1",
   "sdk": 3,
   "brandColor": "#00c1b1",
@@ -10,10 +10,12 @@
     "cloud"
   ],
   "name": {
-    "en": "Ostrom"
+    "en": "Ostrom",
+    "de": "Ostrom"
   },
   "description": {
-    "en": "Integrate Ostrom with your Homey."
+    "en": "Integrate Ostrom with your Homey.",
+    "de": "Integrieren Sie Ostrom mit Ihrem Homey."
   },
   "category": [
     "energy"

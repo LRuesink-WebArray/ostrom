@@ -1,6 +1,7 @@
 {
   "name": {
-    "en": "Home"
+    "en": "Home",
+    "de": "Zuhause"
   },
   "class": "other",
   "capabilities": [
