@@ -293,42 +293,78 @@ module.exports = class OstromHomeDevice extends Homey.Device {
       return;
     }
 
+    this.log(`Retrieved ${retrievedPrices.length} prices from API`);
+    if (retrievedPrices.length > 0) {
+      const firstPrice = DateTime.fromISO(retrievedPrices[0].date!);
+      const lastPrice = DateTime.fromISO(retrievedPrices[retrievedPrices.length - 1].date!);
+      this.log(`Price range: ${firstPrice.toISO()} to ${lastPrice.toISO()}`);
+    }
+
     const prices = new Prices(retrievedPrices);
-    const current = prices.getPriceAtInstant(DateTime.now())!.netPrice!;
+    const now = DateTime.now();
+    const currentHour = now.startOf('hour').toMillis();
+    const lowestPrice = Math.min(...retrievedPrices.map(p => p.netPrice!));
+    const highestPrice = Math.max(...retrievedPrices.map(p => p.netPrice!));
+    
+    this.log(`Current time: ${now.toISO()} (local), ${now.toUTC().toISO()} (UTC)`);
+    this.log(`Current hour millis: ${currentHour}`);
+    
+    const hourlyPricingLog = retrievedPrices.map(p => {
+      const t = DateTime.fromISO(p.date!);
+      const tLocal = t.setZone('local');
+      const price = p.netPrice!.toFixed(2);
+      const markers: string[] = [];
+      
+      if (t.toMillis() === currentHour) {
+        markers.push('current');
+      }
+      if (Math.abs(p.netPrice! - lowestPrice) < 0.001) {
+        markers.push('lowest');
+      }
+      if (Math.abs(p.netPrice! - highestPrice) < 0.001) {
+        markers.push('highest');
+      }
+      
+      const markerStr = markers.length > 0 ? ` (${markers.join(', ')})` : '';
+      return `${tLocal.toFormat('HH:mm')}: ${price}${markerStr} [API: ${t.toISO()}]`;
+    }).join('\n');
+    this.log(`Today's per-hour prices:\n${hourlyPricingLog}`);
+    const current = prices.getPriceAtInstant(now)!;
 
     const highest = prices.getHighest();
     const lowest = prices.getLowest();
 
-    this.log(`Pricing: [current: ${current}, highest: ${highest}, lowest: ${lowest}]`);
+    this.log(`Pricing: [current: ${current.netPrice!}, highest: ${highest}, lowest: ${lowest}]`);
 
-    await this.setCapabilityValue(OstromHomeDevice.CAPABILITY_PRICE_CURRENT, parseFloat(current.toFixed(2)));
+    await this.setCapabilityValue(OstromHomeDevice.CAPABILITY_PRICE_CURRENT, parseFloat(current.netPrice!.toFixed(2)));
     await this.setCapabilityValue(OstromHomeDevice.CAPABILITY_PRICE_HIGHEST, parseFloat(highest.toFixed(2)));
     await this.setCapabilityValue(OstromHomeDevice.CAPABILITY_PRICE_LOWEST, parseFloat(lowest.toFixed(2)));
 
     // Actions
-    
-    // Price below average
-    const average = prices.getAverage();
     const state = { prices, current };
 
-    if (current < average) {
-      await this.priceBelowAverageTrigger.trigger(this, {}, state);
-      await this.priceBelowAverageTodayTrigger.trigger(this, {}, state);
-    }
-
-    // Price above average
-    if (current > average) {
-      await this.priceAboveAverageTrigger.trigger(this, {}, state);
-      await this.priceAboveAverageTodayTrigger.trigger(this, {}, state);
-    }
-
-    // Always trigger, let run listener handle conditions
+    // Triggers with dynamic time windows (next N hours) - always fire, run listener filters
+    await this.priceBelowAverageTrigger.trigger(this, {}, state);
+    await this.priceAboveAverageTrigger.trigger(this, {}, state);
     await this.priceAtLowestTrigger.trigger(this, {}, state);
     await this.priceAtHighestTrigger.trigger(this, {}, state);
-    await this.priceAtLowestTodayTrigger.trigger(this, {}, state);
-    await this.priceAtHighestTodayTrigger.trigger(this, {}, state);
+
+    // Triggers with fixed scope but variable thresholds - always fire, run listener filters
+    await this.priceBelowAverageTodayTrigger.trigger(this, {}, state);
+    await this.priceAboveAverageTodayTrigger.trigger(this, {}, state);
     await this.priceAmongLowestTrigger.trigger(this, {}, state);
     await this.priceAmongHighestTrigger.trigger(this, {}, state);
+
+    // Triggers with fixed scope and no thresholds - can pre-filter to reduce evaluations
+    if (this.isPriceAtLowest(current.netPrice!, lowest)) {
+      this.log(`[TRIGGER] Price at lowest today: current=${current.netPrice!.toFixed(2)}, lowest=${lowest.toFixed(2)}`);
+      await this.priceAtLowestTodayTrigger.trigger(this, {}, state);
+    }
+    
+    if (this.isPriceAtHighest(current.netPrice!, highest)) {
+      this.log(`[TRIGGER] Price at highest today: current=${current.netPrice!.toFixed(2)}, highest=${highest.toFixed(2)}`);
+      await this.priceAtHighestTodayTrigger.trigger(this, {}, state);
+    }
   }
 
   private async updateTotalEnergyConsumption() {

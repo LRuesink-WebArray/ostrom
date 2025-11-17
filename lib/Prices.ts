@@ -29,7 +29,7 @@ export default class Prices {
             throw new Error('Could not find price for the given time.');
         }
 
-        return new Prices(this.prices.slice(index, hours));
+        return new Prices(this.prices.slice(index, index + hours));
     }
 
     getNLowest(n: number): Prices {
