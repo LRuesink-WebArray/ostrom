@@ -307,8 +307,8 @@
           "name": "price",
           "type": "number",
           "title": {
-            "en": "Price",
-            "de": "Preis"
+            "en": "Price (€)",
+            "de": "Preis (€)"
           },
           "placeholder": {
             "en": "0.2"

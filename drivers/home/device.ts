@@ -133,8 +133,9 @@ module.exports = class OstromHomeDevice extends Homey.Device {
     
     // Conditions with the same helper functions
     this.currentPriceBelowCondition = this.homey.flow.getConditionCard('current_price_below');
-    this.currentPriceBelowCondition.registerRunListener(async (args, state: TriggerState) => {
-      return state.current.netPrice! < args.price;
+    this.currentPriceBelowCondition.registerRunListener(async (args) => {
+      const currentPrice = this.getCapabilityValue(OstromHomeDevice.CAPABILITY_PRICE_CURRENT);
+      return currentPrice < args.price;
     });
 
     this.currentPriceBelowAverageCondition = this.homey.flow.getConditionCard('cond_price_below_avg');

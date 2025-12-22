@@ -1,6 +1,6 @@
 {
   "id": "com.ostrom",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "compatibility": ">=12.0.1",
   "sdk": 3,
   "brandColor": "#00c1b1",
@@ -14,8 +14,8 @@
     "de": "Ostrom"
   },
   "description": {
-    "en": "Integrate Ostrom with your Homey.",
-    "de": "Integrieren Sie Ostrom mit Ihrem Homey."
+    "en": "Energy As It Should Have Always Been.",
+    "de": "Energie, wie sie schon immer hätte sein sollen."
   },
   "category": [
     "energy"
