@@ -2,7 +2,9 @@
   "name": "com.ostrom",
   "version": "1.0.0",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.4",
@@ -10,7 +12,8 @@
     "@types/luxon": "^3.6.2",
     "@types/node": "^24.0.3",
     "openapi-typescript": "^7.8.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^2.1.8"
   },
   "dependencies": {
     "cross-fetch": "^4.1.0",

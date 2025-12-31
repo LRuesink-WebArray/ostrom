@@ -3,6 +3,7 @@ import OstromServerClient, { Consumption, Contract, Price, Resolution } from '..
 import { DateTime } from 'luxon';
 import { randomInt } from 'crypto';
 import Prices from '../../lib/Prices.js';
+import * as ConditionHandlers from '../../lib/ConditionHandlers.js';
 
 type TriggerState = { current: Price, prices: Prices };
 
@@ -18,6 +19,8 @@ module.exports = class OstromHomeDevice extends Homey.Device {
   private client!: OstromServerClient;
   private lastFetchedHour: DateTime|null = null;
   private scheduledUpdate: NodeJS.Timeout|null = null;
+  private currentPrices: Prices|null = null;
+  private currentPrice: Price|null = null;
 
   priceBelowAverageTrigger!: FlowCardTriggerDevice;
   priceAboveAverageTrigger!: FlowCardTriggerDevice;
@@ -42,32 +45,11 @@ module.exports = class OstromHomeDevice extends Homey.Device {
   currentPriceAmongHighestTodayCondition!: FlowCard;
   currentPriceAmongLowestWithinTimeFrameCondition!: FlowCard;
 
-  private isPriceBelowAverage(currentPrice: number, averagePrice: number, percentage: number): boolean {
-    const threshold = averagePrice * (1 - percentage / 100);
-    return currentPrice <= threshold;
-  }
-
-  private isPriceAboveAverage(currentPrice: number, averagePrice: number, percentage: number): boolean {
-    const threshold = averagePrice * (1 + percentage / 100);
-    return currentPrice >= threshold;
-  }
-
-  private isPriceAtLowest(currentPrice: number, lowestPrice: number): boolean {
-    return Math.abs(currentPrice - lowestPrice) < 0.001;
-  }
-
-  private isPriceAtHighest(currentPrice: number, highestPrice: number): boolean {
-    return Math.abs(currentPrice - highestPrice) < 0.001;
-  }
-
-  private isPriceAmongLowest(prices: Prices, rankedHours: number): boolean {
-    const lowestPrices = prices.getNLowest(rankedHours);
-    return lowestPrices.getPriceAtInstant(DateTime.now()) !== undefined;
-  }
-
-  private isPriceAmongHighest(prices: Prices, rankedHours: number): boolean {
-    const highestPrices = prices.getNHighest(rankedHours);
-    return highestPrices.getPriceAtInstant(DateTime.now()) !== undefined;
+  private getConditionContext(): ConditionHandlers.ConditionContext {
+    return {
+      currentPrices: this.currentPrices,
+      currentPrice: this.currentPrice,
+    };
   }
 
   /**
@@ -80,55 +62,55 @@ module.exports = class OstromHomeDevice extends Homey.Device {
     this.priceBelowAverageTrigger = this.homey.flow.getDeviceTriggerCard('price_below_avg'); 
     this.priceBelowAverageTrigger.registerRunListener(async (args, state: TriggerState) => {
       const prices = state.prices.getPricesForNextNHours(DateTime.now(), args.hours);
-      return this.isPriceBelowAverage(state.current.netPrice!, prices.getAverage(), args.percentage);
+      return ConditionHandlers.isPriceBelowAverage(state.current.netPrice!, prices.getAverage(), args.percentage);
     });
     
     this.priceAboveAverageTrigger = this.homey.flow.getDeviceTriggerCard('price_above_avg');
     this.priceAboveAverageTrigger.registerRunListener(async (args, state: TriggerState) => {
       const prices = state.prices.getPricesForNextNHours(DateTime.now(), args.hours);
-      return this.isPriceAboveAverage(state.current.netPrice!, prices.getAverage(), args.percentage);
+      return ConditionHandlers.isPriceAboveAverage(state.current.netPrice!, prices.getAverage(), args.percentage);
     });
 
     this.priceBelowAverageTodayTrigger = this.homey.flow.getDeviceTriggerCard('price_below_avg_today');
     this.priceBelowAverageTodayTrigger.registerRunListener(async (args, state: TriggerState) => {
-      return this.isPriceBelowAverage(state.current.netPrice!, state.prices.getAverage(), args.percentage);
+      return ConditionHandlers.isPriceBelowAverage(state.current.netPrice!, state.prices.getAverage(), args.percentage);
     });
     
     this.priceAboveAverageTodayTrigger = this.homey.flow.getDeviceTriggerCard('price_above_avg_today');
     this.priceAboveAverageTodayTrigger.registerRunListener(async (args, state: TriggerState) => {
-      return this.isPriceAboveAverage(state.current.netPrice!, state.prices.getAverage(), args.percentage);
+      return ConditionHandlers.isPriceAboveAverage(state.current.netPrice!, state.prices.getAverage(), args.percentage);
     });
         
     this.priceAtLowestTrigger = this.homey.flow.getDeviceTriggerCard('price_at_lowest');
     this.priceAtLowestTrigger.registerRunListener(async (args, state: TriggerState) => {
       const prices = state.prices.getPricesForNextNHours(DateTime.now(), args.hours);
-      return this.isPriceAtLowest(state.current.netPrice!, prices.getLowest());
+      return ConditionHandlers.isPriceAtLowest(state.current.netPrice!, prices.getLowest());
     });
     
     this.priceAtHighestTrigger = this.homey.flow.getDeviceTriggerCard('price_at_highest');
     this.priceAtHighestTrigger.registerRunListener(async (args, state: TriggerState) => {
       const prices = state.prices.getPricesForNextNHours(DateTime.now(), args.hours);
-      return this.isPriceAtHighest(state.current.netPrice!, prices.getHighest());
+      return ConditionHandlers.isPriceAtHighest(state.current.netPrice!, prices.getHighest());
     });
     
     this.priceAtLowestTodayTrigger = this.homey.flow.getDeviceTriggerCard('price_at_lowest_today');
     this.priceAtLowestTodayTrigger.registerRunListener(async (args, state: TriggerState) => {
-      return this.isPriceAtLowest(state.current.netPrice!, state.prices.getLowest());
+      return ConditionHandlers.isPriceAtLowest(state.current.netPrice!, state.prices.getLowest());
     });
 
     this.priceAtHighestTodayTrigger = this.homey.flow.getDeviceTriggerCard('price_at_highest_today');
     this.priceAtHighestTodayTrigger.registerRunListener(async (args, state: TriggerState) => {
-      return this.isPriceAtHighest(state.current.netPrice!, state.prices.getHighest());
+      return ConditionHandlers.isPriceAtHighest(state.current.netPrice!, state.prices.getHighest());
     });
 
     this.priceAmongLowestTrigger = this.homey.flow.getDeviceTriggerCard('price_among_lowest_today');
     this.priceAmongLowestTrigger.registerRunListener(async (args, state: TriggerState) => {
-      return this.isPriceAmongLowest(state.prices, args.ranked_hours);
+      return ConditionHandlers.isPriceAmongLowest(state.prices, args.ranked_hours);
     });
 
     this.priceAmongHighestTrigger = this.homey.flow.getDeviceTriggerCard('price_among_highest_today');
     this.priceAmongHighestTrigger.registerRunListener(async (args, state: TriggerState) => {
-      return this.isPriceAmongHighest(state.prices, args.ranked_hours);
+      return ConditionHandlers.isPriceAmongHighest(state.prices, args.ranked_hours);
     });
     
     // Conditions with the same helper functions
@@ -139,64 +121,58 @@ module.exports = class OstromHomeDevice extends Homey.Device {
     });
 
     this.currentPriceBelowAverageCondition = this.homey.flow.getConditionCard('cond_price_below_avg');
-    this.currentPriceBelowAverageCondition.registerRunListener(async (args, state: TriggerState) => {
-      const prices = state.prices.getPricesForNextNHours(DateTime.now(), args.hours);
-      return this.isPriceBelowAverage(state.current.netPrice!, prices.getAverage(), args.percentage);
+    this.currentPriceBelowAverageCondition.registerRunListener(async (args) => {
+      return ConditionHandlers.condPriceBelowAvg(this.getConditionContext(), args);
     });
 
     this.currentPriceAboveAverageCondition = this.homey.flow.getConditionCard('cond_price_above_avg');
-    this.currentPriceAboveAverageCondition.registerRunListener(async (args, state: TriggerState) => {
-      const prices = state.prices.getPricesForNextNHours(DateTime.now(), args.hours);
-      return this.isPriceAboveAverage(state.current.netPrice!, prices.getAverage(), args.percentage);
+    this.currentPriceAboveAverageCondition.registerRunListener(async (args) => {
+      return ConditionHandlers.condPriceAboveAvg(this.getConditionContext(), args);
     });
 
     this.currentPriceBelowAverageTodayCondition = this.homey.flow.getConditionCard('cond_price_below_avg_today');
-    this.currentPriceBelowAverageTodayCondition.registerRunListener(async (args, state: TriggerState) => {
-      return this.isPriceBelowAverage(state.current.netPrice!, state.prices.getAverage(), args.percentage);
+    this.currentPriceBelowAverageTodayCondition.registerRunListener(async (args) => {
+      return ConditionHandlers.condPriceBelowAvgToday(this.getConditionContext(), args);
     });
 
     this.currentPriceAboveAverageTodayCondition = this.homey.flow.getConditionCard('cond_price_above_avg_today');
-    this.currentPriceAboveAverageTodayCondition.registerRunListener(async (args, state: TriggerState) => {
-      return this.isPriceAboveAverage(state.current.netPrice!, state.prices.getAverage(), args.percentage);
+    this.currentPriceAboveAverageTodayCondition.registerRunListener(async (args) => {
+      return ConditionHandlers.condPriceAboveAvgToday(this.getConditionContext(), args);
     });
 
     this.currentPriceAtLowestCondition = this.homey.flow.getConditionCard('cond_price_at_lowest');
-    this.currentPriceAtLowestCondition.registerRunListener(async (args, state: TriggerState) => {
-      const prices = state.prices.getPricesForNextNHours(DateTime.now(), args.hours);
-      return this.isPriceAtLowest(state.current.netPrice!, prices.getLowest());
+    this.currentPriceAtLowestCondition.registerRunListener(async (args) => {
+      return ConditionHandlers.condPriceAtLowest(this.getConditionContext(), args);
     });
 
     this.currentPriceAtHighestCondition = this.homey.flow.getConditionCard('cond_price_at_highest');
-    this.currentPriceAtHighestCondition.registerRunListener(async (args, state: TriggerState) => {
-      const prices = state.prices.getPricesForNextNHours(DateTime.now(), args.hours);
-      return this.isPriceAtHighest(state.current.netPrice!, prices.getHighest());
+    this.currentPriceAtHighestCondition.registerRunListener(async (args) => {
+      return ConditionHandlers.condPriceAtHighest(this.getConditionContext(), args);
     });
 
     this.currentPriceAtLowestTodayCondition = this.homey.flow.getConditionCard('cond_price_at_lowest_today');
-    this.currentPriceAtLowestTodayCondition.registerRunListener(async (args, state: TriggerState) => {
-      return this.isPriceAtLowest(state.current.netPrice!, state.prices.getLowest());
+    this.currentPriceAtLowestTodayCondition.registerRunListener(async () => {
+      return ConditionHandlers.condPriceAtLowestToday(this.getConditionContext());
     });
 
     this.currentPriceAtHighestTodayCondition = this.homey.flow.getConditionCard('cond_price_at_highest_today');
-    this.currentPriceAtHighestTodayCondition.registerRunListener(async (args, state: TriggerState) => {
-      return this.isPriceAtHighest(state.current.netPrice!, state.prices.getHighest());
+    this.currentPriceAtHighestTodayCondition.registerRunListener(async () => {
+      return ConditionHandlers.condPriceAtHighestToday(this.getConditionContext());
     });
 
     this.currentPriceAmongLowestTodayCondition = this.homey.flow.getConditionCard('cond_price_among_lowest_today');
-    this.currentPriceAmongLowestTodayCondition.registerRunListener(async (args, state: TriggerState) => {
-      return this.isPriceAmongLowest(state.prices, args.ranked_hours);
+    this.currentPriceAmongLowestTodayCondition.registerRunListener(async (args) => {
+      return ConditionHandlers.condPriceAmongLowestToday(this.getConditionContext(), args);
     });
 
     this.currentPriceAmongHighestTodayCondition = this.homey.flow.getConditionCard('cond_price_among_highest_today');
-    this.currentPriceAmongHighestTodayCondition.registerRunListener(async (args, state: TriggerState) => {
-      return this.isPriceAmongHighest(state.prices, args.ranked_hours);
+    this.currentPriceAmongHighestTodayCondition.registerRunListener(async (args) => {
+      return ConditionHandlers.condPriceAmongHighestToday(this.getConditionContext(), args);
     });
 
     this.currentPriceAmongLowestWithinTimeFrameCondition = this.homey.flow.getConditionCard('cond_price_among_lowest_during_time');
-    this.currentPriceAmongLowestWithinTimeFrameCondition.registerRunListener(async (args, state: TriggerState) => {
-      // This one might need custom logic based on time frame
-      const timeFramePrices = state.prices.getPricesBetweenTimes(args.start_time, args.end_time);
-      return this.isPriceAmongLowest(timeFramePrices, args.ranked_hours);
+    this.currentPriceAmongLowestWithinTimeFrameCondition.registerRunListener(async (args) => {
+      return ConditionHandlers.condPriceAmongLowestDuringTime(this.getConditionContext(), args);
     });
     
     await this.initializeTotalUsage();
@@ -302,6 +278,7 @@ module.exports = class OstromHomeDevice extends Homey.Device {
     }
 
     const prices = new Prices(retrievedPrices);
+    this.currentPrices = prices;
     const now = DateTime.now();
     const currentHour = now.startOf('hour').toMillis();
     const lowestPrice = Math.min(...retrievedPrices.map(p => p.netPrice!));
@@ -330,7 +307,14 @@ module.exports = class OstromHomeDevice extends Homey.Device {
       return `${tLocal.toFormat('HH:mm')}: ${price}${markerStr} [API: ${t.toISO()}]`;
     }).join('\n');
     this.log(`Today's per-hour prices:\n${hourlyPricingLog}`);
-    const current = prices.getPriceAtInstant(now)!;
+    const current = prices.getPriceAtInstant(now);
+    
+    if (!current) {
+      this.error(`Could not find price for current hour: ${now.toISO()}`);
+      return;
+    }
+    
+    this.currentPrice = current;
 
     const highest = prices.getHighest();
     const lowest = prices.getLowest();
@@ -357,12 +341,12 @@ module.exports = class OstromHomeDevice extends Homey.Device {
     await this.priceAmongHighestTrigger.trigger(this, {}, state);
 
     // Triggers with fixed scope and no thresholds - can pre-filter to reduce evaluations
-    if (this.isPriceAtLowest(current.netPrice!, lowest)) {
+    if (ConditionHandlers.isPriceAtLowest(current.netPrice!, lowest)) {
       this.log(`[TRIGGER] Price at lowest today: current=${current.netPrice!.toFixed(2)}, lowest=${lowest.toFixed(2)}`);
       await this.priceAtLowestTodayTrigger.trigger(this, {}, state);
     }
     
-    if (this.isPriceAtHighest(current.netPrice!, highest)) {
+    if (ConditionHandlers.isPriceAtHighest(current.netPrice!, highest)) {
       this.log(`[TRIGGER] Price at highest today: current=${current.netPrice!.toFixed(2)}, highest=${highest.toFixed(2)}`);
       await this.priceAtHighestTodayTrigger.trigger(this, {}, state);
     }
